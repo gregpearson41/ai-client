@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "SonarQube Server 172",
+        "projectKey": "greg_SonarDashboard-GUI_1a84d3b5-5977-4733-ba54-fccd8423b504"
+    }
+}

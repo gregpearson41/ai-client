@@ -46,6 +46,7 @@ const navItems: NavItem[] = [
 const Layout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [hamburgerAnchor, setHamburgerAnchor] = useState<null | HTMLElement>(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,6 +61,14 @@ const Layout: React.FC = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleHamburgerOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setHamburgerAnchor(event.currentTarget);
+  };
+
+  const handleHamburgerClose = () => {
+    setHamburgerAnchor(null);
   };
 
   const handleLogout = () => {
@@ -182,6 +191,13 @@ const Layout: React.FC = () => {
           }}>
             {navItems.find((item) => item.path === location.pathname)?.text || 'Dashboard'}
           </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="navigation menu"
+            onClick={handleHamburgerOpen}
+          >
+            <MenuIcon />
+          </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <TimeClock variant="compact" showSeconds={true} />
@@ -230,6 +246,45 @@ const Layout: React.FC = () => {
                 <LogoutIcon fontSize="small" sx={{ color: 'rgba(255,255,255,0.5)' }} />
               </ListItemIcon>
               Logout
+            </MenuItem>
+          </Menu>
+
+          {/* Hamburger navigation – About & Help */}
+          <Menu
+            anchorEl={hamburgerAnchor}
+            open={Boolean(hamburgerAnchor)}
+            onClose={handleHamburgerClose}
+            onClick={handleHamburgerClose}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            <MenuItem onClick={() => { handleHamburgerClose(); handleNavigation('/about'); }}>
+              <ListItemIcon sx={{ color: location.pathname === '/about' ? '#00bcd4' : 'rgba(255,255,255,0.45)' }}>
+                <InfoIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary="About"
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    color: location.pathname === '/about' ? '#fff' : '#e0e0e0',
+                    fontWeight: location.pathname === '/about' ? 600 : 400,
+                  }
+                }}
+              />
+            </MenuItem>
+            <MenuItem onClick={() => { handleHamburgerClose(); handleNavigation('/help'); }}>
+              <ListItemIcon sx={{ color: location.pathname === '/help' ? '#00bcd4' : 'rgba(255,255,255,0.45)' }}>
+                <HelpIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary="Help"
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    color: location.pathname === '/help' ? '#fff' : '#e0e0e0',
+                    fontWeight: location.pathname === '/help' ? 600 : 400,
+                  }
+                }}
+              />
             </MenuItem>
           </Menu>
         </Toolbar>

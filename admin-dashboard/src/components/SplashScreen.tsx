@@ -10,26 +10,54 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, duration = 1000
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const interval = 100;
-    const increment = (interval / duration) * 100;
+    let cancelled = false;
+    let currentProgress = 0;
 
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const newProgress = prev + increment;
-        if (newProgress >= 100) {
-          clearInterval(timer);
-          return 100;
+    const scheduleNext = () => {
+      if (cancelled) return;
+
+      let delay: number;
+      let increment: number;
+
+      if (currentProgress < 35) {
+        // fast, chunky jumps
+        delay = 40 + Math.random() * 180;       // 40–220 ms
+        increment = 3 + Math.random() * 7;       // 3–10 %
+      } else if (currentProgress < 65) {
+        // settling into a mid-pace
+        delay = 100 + Math.random() * 220;       // 100–320 ms
+        increment = 1.5 + Math.random() * 4.5;   // 1.5–6 %
+      } else if (currentProgress < 88) {
+        // noticeably slowing
+        delay = 180 + Math.random() * 280;       // 180–460 ms
+        increment = 0.7 + Math.random() * 2.8;   // 0.7–3.5 %
+      } else {
+        // crawls toward the end
+        delay = 250 + Math.random() * 450;       // 250–700 ms
+        increment = 0.2 + Math.random() * 0.9;   // 0.2–1.1 %
+      }
+
+      setTimeout(() => {
+        if (cancelled) return;
+        currentProgress = Math.min(currentProgress + increment, 99.5);
+        setProgress(currentProgress);
+        if (currentProgress < 99.5) {
+          scheduleNext();
         }
-        return newProgress;
-      });
-    }, interval);
+      }, delay);
+    };
 
+    scheduleNext();
+
+    // snap to 100 and hand off to the app
     const completeTimer = setTimeout(() => {
+      if (cancelled) return;
+      setProgress(100);
       onComplete();
     }, duration);
 
     return () => {
-      clearInterval(timer);
+      cancelled = true;
       clearTimeout(completeTimer);
     };
   }, [duration, onComplete]);
@@ -88,7 +116,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, duration = 1000
             borderRadius: 2,
             backgroundColor: 'rgba(0,188,212,0.15)',
             '& .MuiLinearProgress-bar': {
-              backgroundColor: '#00bcd4',
+              backgroundColor: '#d40000',
               borderRadius: 2,
               boxShadow: '0 0 10px rgba(0,188,212,0.5)',
             },
@@ -103,11 +131,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, duration = 1000
           position: 'relative',
           zIndex: 1,
           color: 'rgba(0,188,212,0.6)',
-          mt: 2,
+          mt: 3,
           fontFamily: 'monospace',
           letterSpacing: '0.25em',
           textTransform: 'uppercase',
-          fontSize: '0.72rem',
+          fontSize: '1.72rem',
         }}
       >
         Loading...

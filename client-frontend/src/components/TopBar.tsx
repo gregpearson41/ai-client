@@ -21,7 +21,7 @@ import HelpIcon from '@mui/icons-material/Help';
 
 const mainNavItems = [
   { text: 'Dashboard', icon: <DashboardIcon fontSize="small" />, path: '/dashboard' },
-  { text: 'Tools', icon: <BuildIcon fontSize="small" />, path: '/tools' },
+  { text: 'AI Simple App', icon: <BuildIcon fontSize="small" />, path: '/tools' },
 ];
 
 const hamburgerNavItems = [

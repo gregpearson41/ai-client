@@ -65,10 +65,10 @@ const ToolsPage: React.FC = () => {
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, color: 'text.primary' }}>
-        Tools
+        Simple AI App
       </Typography>
       <Typography variant="body1" color="text.secondary" paragraph>
-        Interactive utilities to help with everyday tasks.
+       This is where you put your quick blurb about this particular area
       </Typography>
 
       <Card>

@@ -12,6 +12,7 @@
 # Usage
 #   ./start.sh
 #   ./start.sh --backend 6000 --dashboard 6001 --client 6002
+## ./start.sh --backend 5050 --dashboard 3000 --client 3002
 #   ./start.sh --help
 # ─────────────────────────────────────────────────────────────
 

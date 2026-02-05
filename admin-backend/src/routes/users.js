@@ -323,4 +323,50 @@ router.patch(
   userController.toggleUserStatus
 );
 
+/**
+ * @swagger
+ * /api/users/{id}/password:
+ *   patch:
+ *     summary: Change user password
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       404:
+ *         description: User not found
+ */
+router.patch(
+  '/:id/password',
+  requireRole(ROLES.APP_ADMIN),
+  [
+    param('id').isMongoId().withMessage('Invalid user ID'),
+    body('password')
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters')
+  ],
+  validate,
+  userController.changePassword
+);
+
 module.exports = router;

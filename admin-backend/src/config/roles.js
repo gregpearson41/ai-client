@@ -1,5 +1,5 @@
 const ROLES = {
-  APP_ADMIN: 'App Admin',
+  APP_ADMIN: 'App_Admin',
   OWNER: 'Owner',
   EDITOR: 'Editor',
   VIEWER: 'Viewer'

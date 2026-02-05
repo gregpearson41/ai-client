@@ -300,6 +300,41 @@ const toggleUserStatus = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Change user password
+ * @route   PATCH /api/users/:id/password
+ * @access  Private (App Admin)
+ */
+const changePassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Assign + save triggers the pre-save bcrypt hook
+    user.password = password;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password changed successfully'
+    });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error changing password'
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
@@ -307,5 +342,6 @@ module.exports = {
   updateUser,
   deleteUser,
   updateUserRole,
-  toggleUserStatus
+  toggleUserStatus,
+  changePassword
 };

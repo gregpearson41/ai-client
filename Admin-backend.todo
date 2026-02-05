@@ -1,0 +1,14 @@
+Rest Endpoints without authentication
+1. Topics - this will fill the drop down list in the client tool 
+
+
+
+Rest Endpoint with authentication
+1. Topic - This will allow admins the ability to fill the topic collection 
+    JSON model for Topic
+    {
+        "topic_name": "string",
+        "description": "string",
+        "created_by": "string",
+        "created_date": "date"
+    }

@@ -5,6 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Layout from './components/Layout';
 import DashboardPage from './pages/DashboardPage';
 import ToolsPage from './pages/ToolsPage';
+import ToolsPage_two from './pages/ToolsPage_two';
+import ToolsPage_three from './pages/ToolsPage_three';
 import AboutPage from './pages/AboutPage';
 import HelpPage from './pages/HelpPage';
 
@@ -125,6 +127,8 @@ const App: React.FC = () => {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/tools" element={<ToolsPage />} />
+            <Route path="/tools-two" element={<ToolsPage_two />} />
+            <Route path="/tools-three" element={<ToolsPage_three />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

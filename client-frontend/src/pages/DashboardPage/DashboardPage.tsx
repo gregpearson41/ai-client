@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Grid,
@@ -12,19 +12,7 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
-import CodeIcon from '@mui/icons-material/Code';
-import SpeedIcon from '@mui/icons-material/Speed';
-import CloudDoneIcon from '@mui/icons-material/CloudDone';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { api, HealthResponse, RootResponse } from '../services/api';
-
-interface StatCardProps {
-  title: string;
-  value: string;
-  icon: typeof SvgIcon;
-  color: string;
-  progress?: number;
-}
+import useDashboardPage, { StatCardProps } from './useDashboardPage';
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, progress }) => (
   <Card>
@@ -74,49 +62,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, pr
 );
 
 const DashboardPage: React.FC = () => {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [healthError, setHealthError] = useState(false);
-  const [healthLoading, setHealthLoading] = useState(true);
-  const [apiInfo, setApiInfo] = useState<RootResponse | null>(null);
-  const [lastChecked, setLastChecked] = useState<string>('');
-
-  useEffect(() => {
-    const fetchHealth = async () => {
-      try {
-        const data = await api.health();
-        setHealth(data);
-        setHealthError(false);
-        setLastChecked(new Date().toLocaleTimeString());
-      } catch {
-        setHealthError(true);
-        setLastChecked(new Date().toLocaleTimeString());
-      } finally {
-        setHealthLoading(false);
-      }
-    };
-
-    const fetchInfo = async () => {
-      try {
-        const data = await api.root();
-        setApiInfo(data);
-      } catch {
-        // silently fail — widget stays in loading state
-      }
-    };
-
-    fetchHealth();
-    fetchInfo();
-
-    const interval = setInterval(fetchHealth, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const stats = [
-    { title: 'Uptime',        value: '99.9%',               icon: CloudDoneIcon,  color: '#4caf50', progress: 99 },
-    { title: 'API Version',  value: apiInfo?.version || '—', icon: CodeIcon,       color: '#00bcd4' },
-    { title: 'Response Time', value: '12 ms',               icon: SpeedIcon,      color: '#ff9800', progress: 88 },
-    { title: 'Growth',       value: '+18%',                  icon: TrendingUpIcon, color: '#9c27b0', progress: 72 },
-  ];
+  const { health, healthError, healthLoading, apiInfo, lastChecked, stats } = useDashboardPage();
 
   return (
     <Box>

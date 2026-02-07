@@ -3,66 +3,16 @@ import {
   Box,
   Grid,
   Card,
-  CardContent,
   Typography,
   Chip,
-  LinearProgress,
   CircularProgress,
-  SvgIcon,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
-import useDashboardPage, { StatCardProps } from './useDashboardPage';
-
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, progress }) => (
-  <Card>
-    <CardContent>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Box>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {title}
-          </Typography>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-            {value}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            p: 1.5,
-            borderRadius: 10,
-            background: `${color}15`,
-            border: `1px solid ${color}30`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Icon sx={{ color, fontSize: 26 }} />
-        </Box>
-      </Box>
-      {progress !== undefined && (
-        <Box sx={{ mt: 2 }}>
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: `${color}18`,
-              '& .MuiLinearProgress-bar': { backgroundColor: color, borderRadius: 3 },
-            }}
-          />
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-            {progress}% of target
-          </Typography>
-        </Box>
-      )}
-    </CardContent>
-  </Card>
-);
+import useDashboardPage from './useDashboardPage';
 
 const DashboardPage: React.FC = () => {
-  const { health, healthError, healthLoading, apiInfo, lastChecked, stats } = useDashboardPage();
+  const { health, healthError, healthLoading, apiInfo, systemInfo, lastChecked } = useDashboardPage();
 
   return (
     <Box>
@@ -142,13 +92,13 @@ const DashboardPage: React.FC = () => {
             <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 2 }}>
               API Information
             </Typography>
-            {apiInfo ? (
+            {apiInfo || systemInfo ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
                 {[
-                  { label: 'Message',       value: apiInfo.message },
-                  { label: 'Version',       value: apiInfo.version },
-                  { label: 'Documentation', value: apiInfo.documentation },
-                ].map((row, i) => (
+                  { label: 'Company Owner',   value: systemInfo?.companyOwner || '—' },
+                  { label: 'Version',         value: apiInfo?.version || '—' },
+                  { label: 'Build Number',    value: systemInfo?.buildNumber || '—' },
+                ].map((row, i, arr) => (
                   <Box
                     key={row.label}
                     sx={{
@@ -156,7 +106,7 @@ const DashboardPage: React.FC = () => {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       py: 1.5,
-                      ...(i < 2 && { borderBottom: '1px solid', borderColor: 'divider' }),
+                      ...(i < arr.length - 1 && { borderBottom: '1px solid', borderColor: 'divider' }),
                     }}
                   >
                     <Typography variant="body2" color="text.secondary">{row.label}</Typography>
@@ -179,14 +129,6 @@ const DashboardPage: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* Stats row */}
-      <Grid container spacing={3} sx={{ mt: 1 }}>
-        {stats.map((stat) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.title}>
-            <StatCard {...stat} />
-          </Grid>
-        ))}
-      </Grid>
     </Box>
   );
 };

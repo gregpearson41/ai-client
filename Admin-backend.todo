@@ -12,3 +12,10 @@ Rest Endpoint with authentication
         "created_by": "string",
         "created_date": "date"
     }
+
+2. System Info - this will allow company information 
+    {
+        "CompanyOwner": "string",
+        "Version": "string",
+        "BuildNumber": "string"
+    }

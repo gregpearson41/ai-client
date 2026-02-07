@@ -36,21 +36,7 @@ const HelpPage: React.FC = () => {
         Find answers to common questions or reach out to our support team.
       </Typography>
 
-      <Paper sx={{ p: 3, mb: 4 }}>
-        <TextField
-          fullWidth
-          placeholder="Search for help topics..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon color="action" />
-              </InputAdornment>
-            )
-          }}
-        />
-      </Paper>
+       
 
       <Typography variant="h5" gutterBottom>
         Frequently Asked Questions

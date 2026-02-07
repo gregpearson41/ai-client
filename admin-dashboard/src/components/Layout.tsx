@@ -38,9 +38,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { text: 'AI Prompt', icon: <DashboardIcon />, path: '/ai-prompt' },
-  { text: 'About', icon: <InfoIcon />, path: '/about' },
-  { text: 'Help', icon: <HelpIcon />, path: '/help' }
+  { text: 'AI Prompt', icon: <DashboardIcon />, path: '/ai-prompt' }
 ];
 
 const Layout: React.FC = () => {

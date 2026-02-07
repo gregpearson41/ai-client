@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Link } from '@mui/material';
+import { api } from '../services/api';
 
 const Footer: React.FC = () => {
+  const [buildNumber, setBuildNumber] = useState<string | null>(null);
+  const [companyOwner, setCompanyOwner] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.systemInfo()
+      .then((res) => {
+        setBuildNumber(res.data.buildNumber);
+        setCompanyOwner(res.data.companyOwner);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <Box
       component="footer"
@@ -33,7 +46,7 @@ const Footer: React.FC = () => {
         </Typography>
       </Box>
       <Typography variant="caption" sx={{ color: 'rgba(0,0,0,0.28)', fontSize: '0.68rem' }}>
-        Powered by TechLifeCorp
+        {companyOwner || 'TechLifeCorp'}{buildNumber ? ` · Build ${buildNumber}` : ''}
       </Typography>
     </Box>
   );

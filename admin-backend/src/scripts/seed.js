@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const Role = require('../models/Role');
 const Topic = require('../models/Topic');
+const SystemInfo = require('../models/SystemInfo');
+const LoginTracker = require('../models/LoginTracker');
 const { ROLES } = require('../config/roles');
 
 const seedUsers = [
@@ -84,6 +86,14 @@ const seedTopics = [
   }
 ];
 
+const seedSystemInfo = [
+  {
+    companyOwner: 'TechLifeCorp',
+    version: '1.0.0',
+    buildNumber: '100'
+  }
+];
+
 const seedDatabase = async () => {
   try {
     // Connect to MongoDB
@@ -127,6 +137,33 @@ const seedDatabase = async () => {
     for (const topicData of seedTopics) {
       const topic = await Topic.create(topicData);
       console.log(`Created topic: ${topic.topic_name}`);
+    }
+
+    // Clear existing loginTracker
+    await LoginTracker.deleteMany({});
+    console.log('Cleared existing loginTracker');
+
+    // Create sample login records using the seeded users
+    const adminUser = await User.findOne({ email: 'admin@techlifecorp.com' });
+    const ownerUser = await User.findOne({ email: 'owner@techlifecorp.com' });
+    if (adminUser) {
+      await LoginTracker.create({ userId: adminUser._id, dateTimeStamp: new Date('2025-12-01T08:30:00Z') });
+      await LoginTracker.create({ userId: adminUser._id, dateTimeStamp: new Date('2025-12-02T09:15:00Z') });
+      console.log('Created sample login records for admin');
+    }
+    if (ownerUser) {
+      await LoginTracker.create({ userId: ownerUser._id, dateTimeStamp: new Date('2025-12-01T10:45:00Z') });
+      console.log('Created sample login records for owner');
+    }
+
+    // Clear existing systemInfo
+    await SystemInfo.deleteMany({});
+    console.log('Cleared existing systemInfo');
+
+    // Create seed systemInfo
+    for (const infoData of seedSystemInfo) {
+      const info = await SystemInfo.create(infoData);
+      console.log(`Created systemInfo: ${info.companyOwner} v${info.version} (build ${info.buildNumber})`);
     }
 
     console.log('\n========================================');

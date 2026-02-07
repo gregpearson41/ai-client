@@ -1,7 +1,21 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Box, Typography, Link } from '@mui/material';
+import { api } from '../services/api';
 
 const Footer: React.FC = () => {
+const [buildNumber, setBuildNumber] = useState<string | null>(null);
+  const [companyOwner, setCompanyOwner] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.systemInfo()
+      .then((res) => {
+        setBuildNumber(res.data.buildNumber);
+        setCompanyOwner(res.data.companyOwner);
+      })
+      .catch(() => {});
+  }, []);
+
+
   return (
     <Box
       component="footer"
@@ -19,7 +33,7 @@ const Footer: React.FC = () => {
         {'© '}
         {new Date().getFullYear()}{' '}
         <Link href="#" sx={{ color: 'rgba(0,188,212,0.6)', textDecoration: 'none', '&:hover': { color: '#00bcd4' } }}>
-          AI Client Dashboard
+           {companyOwner || 'TechLifeCorp'}{buildNumber ? ` · Build ${buildNumber}` : ''}
         </Link>
         {' | All rights reserved.'}
       </Typography>

@@ -36,7 +36,10 @@ const DashboardPage: React.FC = () => {
       </Box>
 
       {/* Login Tracker Table */}
-<Card sx={{ p: 3 }}>
+<Card sx={{ p: 3,width: '100%',          // full width of parent
+    maxWidth: 900,          // optional cap
+    
+    ml: 'auto'   }}>
   {/* Header */}
   <Box
     sx={{

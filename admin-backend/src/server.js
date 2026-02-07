@@ -10,6 +10,7 @@ const swaggerSpec = require('./config/swagger');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const topicRoutes = require('./routes/topics');
+const systemInfoRoutes = require('./routes/systemInfo');
 
 // Initialize express app
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/topics', topicRoutes);
+app.use('/api/system-info', systemInfoRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

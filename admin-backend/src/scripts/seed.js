@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const Role = require('../models/Role');
 const Topic = require('../models/Topic');
+const SystemInfo = require('../models/SystemInfo');
 const { ROLES } = require('../config/roles');
 
 const seedUsers = [
@@ -84,6 +85,14 @@ const seedTopics = [
   }
 ];
 
+const seedSystemInfo = [
+  {
+    companyOwner: 'TechLifeCorp',
+    version: '1.0.0',
+    buildNumber: '100'
+  }
+];
+
 const seedDatabase = async () => {
   try {
     // Connect to MongoDB
@@ -127,6 +136,16 @@ const seedDatabase = async () => {
     for (const topicData of seedTopics) {
       const topic = await Topic.create(topicData);
       console.log(`Created topic: ${topic.topic_name}`);
+    }
+
+    // Clear existing systemInfo
+    await SystemInfo.deleteMany({});
+    console.log('Cleared existing systemInfo');
+
+    // Create seed systemInfo
+    for (const infoData of seedSystemInfo) {
+      const info = await SystemInfo.create(infoData);
+      console.log(`Created systemInfo: ${info.companyOwner} v${info.version} (build ${info.buildNumber})`);
     }
 
     console.log('\n========================================');

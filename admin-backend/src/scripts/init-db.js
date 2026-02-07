@@ -5,6 +5,7 @@ const User  = require('../models/User');
 const Role  = require('../models/Role');
 const Topic = require('../models/Topic');
 const SystemInfo = require('../models/SystemInfo');
+const LoginTracker = require('../models/LoginTracker');
 const { ROLES } = require('../config/roles');
 
 const ADMIN_EMAIL    = 'admin@techlifecorp.com';
@@ -30,6 +31,7 @@ const initDatabase = async () => {
     await Role.deleteMany({});
     await Topic.deleteMany({});
     await SystemInfo.deleteMany({});
+    await LoginTracker.deleteMany({});
     console.log('Cleared all collections');
 
     // ── rebuild indexes ──────────────────────────────────
@@ -37,6 +39,7 @@ const initDatabase = async () => {
     await Role.ensureIndexes();
     await Topic.ensureIndexes();
     await SystemInfo.ensureIndexes();
+    await LoginTracker.ensureIndexes();
     console.log('Indexes ensured');
 
     // ── roles (reference data the app depends on) ────────
@@ -54,7 +57,7 @@ const initDatabase = async () => {
     console.log('  Created systemInfo entry');
 
     // ── single admin user ────────────────────────────────
-    await User.create({
+    const adminUser = await User.create({
       email:    ADMIN_EMAIL,
       password: ADMIN_PASSWORD,
       name:     ADMIN_NAME,
@@ -62,6 +65,10 @@ const initDatabase = async () => {
       isActive: true
     });
     console.log(`  Created admin: ${ADMIN_EMAIL}`);
+
+    // ── sample login record ────────────────────────────
+    await LoginTracker.create({ userId: adminUser._id, dateTimeStamp: new Date('2025-12-01T08:30:00Z') });
+    console.log('  Created sample login record');
 
     // ── summary ──────────────────────────────────────────
     console.log('\n========================================');

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const LoginTracker = require('../models/LoginTracker');
 const { ROLES } = require('../config/roles');
 
 /**
@@ -101,6 +102,9 @@ const login = async (req, res) => {
 
     // Update last login
     await user.updateLastLogin();
+
+    // Track login
+    await LoginTracker.create({ userId: user._id });
 
     // Generate token
     const token = generateToken(user._id);

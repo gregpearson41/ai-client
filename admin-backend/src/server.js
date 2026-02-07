@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const topicRoutes = require('./routes/topics');
 const systemInfoRoutes = require('./routes/systemInfo');
+const loginTrackerRoutes = require('./routes/loginTracker');
 
 // Initialize express app
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/topics', topicRoutes);
 app.use('/api/system-info', systemInfoRoutes);
+app.use('/api/login-tracker', loginTrackerRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

@@ -44,7 +44,7 @@ const AIPage: React.FC = () => {
 
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-            
+
         </Typography>
 
         <Divider sx={{ my: 3 }} />

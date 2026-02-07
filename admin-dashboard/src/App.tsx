@@ -11,6 +11,7 @@ import DashboardPage from './pages/DashboardPage';
 import AboutPage from './pages/AboutPage';
 import HelpPage from './pages/HelpPage';
 import AIPage from './pages/AI-Prompt';
+import UsersPage from './pages/UsersPage';
 
 const theme = createTheme({
   palette: {
@@ -248,6 +249,7 @@ const App: React.FC = () => {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="ai-prompt" element={<AIPage />} />
+              <Route path="users" element={<UsersPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="help" element={<HelpPage />} />
             </Route>

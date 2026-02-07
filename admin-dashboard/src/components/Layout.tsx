@@ -24,6 +24,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import HelpIcon from '@mui/icons-material/Help';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
+import PeopleIcon from '@mui/icons-material/People';
 import { useAuth } from '../contexts/AuthContext';
 import Footer from './Footer';
 import TimeClock from './TimeClock';
@@ -34,13 +35,15 @@ interface NavItem {
   text: string;
   icon: React.ReactNode;
   path: string;
+  adminOnly?: boolean;
 }
 
 const navItems: NavItem[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { text: 'AI Prompt', icon: <DashboardIcon />, path: '/ai-prompt' },
-  { text: 'About', icon: <InfoIcon />, path: '/about' },
-  { text: 'Help', icon: <HelpIcon />, path: '/help' }
+  // { text: 'AI Prompt', icon: <DashboardIcon />, path: '/ai-prompt' },
+  { text: 'Users',     icon: <PeopleIcon />,    path: '/users',     adminOnly: true },
+  // { text: 'About',     icon: <InfoIcon />,      path: '/about' },
+  // { text: 'Help',      icon: <HelpIcon />,      path: '/help' }
 ];
 
 const Layout: React.FC = () => {
@@ -105,7 +108,7 @@ const Layout: React.FC = () => {
       </Toolbar>
       <Divider />
       <List sx={{ px: 1 }}>
-        {navItems.map((item) => (
+        {navItems.filter((item) => !item.adminOnly || user?.role === 'App_Admin').map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
               selected={location.pathname === item.path}

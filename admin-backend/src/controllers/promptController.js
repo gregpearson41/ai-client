@@ -25,6 +25,7 @@ const getPrompts = async (req, res) => {
 
     // Execute query with pagination
     const prompts = await Prompt.find(query)
+      .populate('chat_engine', 'engine_name active')
       .sort({ created_date: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -57,7 +58,8 @@ const getPrompts = async (req, res) => {
  */
 const getPromptById = async (req, res) => {
   try {
-    const prompt = await Prompt.findById(req.params.id);
+    const prompt = await Prompt.findById(req.params.id)
+      .populate('chat_engine', 'engine_name active');
 
     if (!prompt) {
       return res.status(404).json({
@@ -86,13 +88,14 @@ const getPromptById = async (req, res) => {
  */
 const createPrompt = async (req, res) => {
   try {
-    const { prompt_name, prompt, description, created_by } = req.body;
+    const { prompt_name, prompt, description, created_by, chat_engine } = req.body;
 
     const newPrompt = await Prompt.create({
       prompt_name,
       prompt,
       description,
       created_by,
+      chat_engine: chat_engine || null,
       created_date: new Date()
     });
 
@@ -117,11 +120,16 @@ const createPrompt = async (req, res) => {
  */
 const updatePrompt = async (req, res) => {
   try {
-    const { prompt_name, prompt, description, created_by } = req.body;
+    const { prompt_name, prompt, description, created_by, chat_engine } = req.body;
+
+    const updateData = { prompt_name, prompt, description, created_by };
+    if (chat_engine !== undefined) {
+      updateData.chat_engine = chat_engine || null;
+    }
 
     const updatedPrompt = await Prompt.findByIdAndUpdate(
       req.params.id,
-      { prompt_name, prompt, description, created_by },
+      updateData,
       { new: true, runValidators: true }
     );
 

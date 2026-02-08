@@ -37,7 +37,8 @@ router.post(
     body('prompt_name').notEmpty().withMessage('Prompt name is required'),
     body('prompt').notEmpty().withMessage('Prompt is required'),
     body('description').optional().isString(),
-    body('created_by').notEmpty().withMessage('Created by is required')
+    body('created_by').notEmpty().withMessage('Created by is required'),
+    body('chat_engine').optional({ values: 'null' }).isMongoId().withMessage('Invalid chat engine ID')
   ],
   validate,
   promptController.createPrompt
@@ -51,7 +52,8 @@ router.put(
     body('prompt_name').optional().notEmpty().withMessage('Prompt name cannot be empty'),
     body('prompt').optional().notEmpty().withMessage('Prompt cannot be empty'),
     body('description').optional().isString(),
-    body('created_by').optional().notEmpty().withMessage('Created by cannot be empty')
+    body('created_by').optional().notEmpty().withMessage('Created by cannot be empty'),
+    body('chat_engine').optional({ values: 'null' }).isMongoId().withMessage('Invalid chat engine ID')
   ],
   validate,
   promptController.updatePrompt

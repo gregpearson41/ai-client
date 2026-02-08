@@ -21,6 +21,11 @@ const promptSchema = new mongoose.Schema(
       required: [true, 'Created by is required'],
       trim: true
     },
+    chat_engine: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ChatEngine',
+      default: null
+    },
     created_date: {
       type: Date,
       default: Date.now
@@ -39,6 +44,7 @@ const promptSchema = new mongoose.Schema(
 // Indexes for faster queries
 promptSchema.index({ prompt_name: 1 });
 promptSchema.index({ created_by: 1 });
+promptSchema.index({ chat_engine: 1 });
 
 const Prompt = mongoose.model('Prompt', promptSchema);
 module.exports = Prompt;

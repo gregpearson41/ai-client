@@ -216,24 +216,36 @@ const seedDatabase = async () => {
       console.log(`Created systemInfo: ${info.companyOwner} v${info.version} (build ${info.buildNumber})`);
     }
 
-    // Clear existing prompts
-    await Prompt.deleteMany({});
-    console.log('Cleared existing prompts');
-
-    // Create seed prompts
-    for (const promptData of seedPrompts) {
-      const prompt = await Prompt.create(promptData);
-      console.log(`Created prompt: ${prompt.prompt_name}`);
-    }
-
     // Clear existing chat engines
     await ChatEngine.deleteMany({});
     console.log('Cleared existing chat engines');
 
     // Create seed chat engines
+    const createdEngines = {};
     for (const engineData of seedChatEngines) {
       const engine = await ChatEngine.create(engineData);
+      createdEngines[engine.engine_name] = engine._id;
       console.log(`Created chat engine: ${engine.engine_name}`);
+    }
+
+    // Clear existing prompts
+    await Prompt.deleteMany({});
+    console.log('Cleared existing prompts');
+
+    // Create seed prompts with chat engine linkage
+    const promptEngineMap = {
+      'Welcome Message': 'OpenAI GPT-4',
+      'Content Summary': 'Anthropic Claude',
+      'Support Response': 'OpenAI GPT-4',
+      'Data Analysis': 'Anthropic Claude'
+    };
+    for (const promptData of seedPrompts) {
+      const engineName = promptEngineMap[promptData.prompt_name];
+      const prompt = await Prompt.create({
+        ...promptData,
+        chat_engine: engineName ? createdEngines[engineName] : null
+      });
+      console.log(`Created prompt: ${prompt.prompt_name} → ${engineName || 'no engine'}`);
     }
 
     console.log('\n========================================');

@@ -6,6 +6,8 @@ const Role  = require('../models/Role');
 const Topic = require('../models/Topic');
 const SystemInfo = require('../models/SystemInfo');
 const LoginTracker = require('../models/LoginTracker');
+const Prompt = require('../models/Prompt');
+const ChatEngine = require('../models/ChatEngine');
 const { ROLES } = require('../config/roles');
 
 const ADMIN_EMAIL    = 'admin@techlifecorp.com';
@@ -32,6 +34,8 @@ const initDatabase = async () => {
     await Topic.deleteMany({});
     await SystemInfo.deleteMany({});
     await LoginTracker.deleteMany({});
+    await Prompt.deleteMany({});
+    await ChatEngine.deleteMany({});
     console.log('Cleared all collections');
 
     // ── rebuild indexes ──────────────────────────────────
@@ -40,6 +44,8 @@ const initDatabase = async () => {
     await Topic.ensureIndexes();
     await SystemInfo.ensureIndexes();
     await LoginTracker.ensureIndexes();
+    await Prompt.ensureIndexes();
+    await ChatEngine.ensureIndexes();
     console.log('Indexes ensured');
 
     // ── roles (reference data the app depends on) ────────
@@ -69,6 +75,24 @@ const initDatabase = async () => {
     // ── sample login record ────────────────────────────
     await LoginTracker.create({ userId: adminUser._id, dateTimeStamp: new Date('2025-12-01T08:30:00Z') });
     console.log('  Created sample login record');
+
+    // ── sample prompt ────────────────────────────────
+    await Prompt.create({
+      prompt_name: 'Welcome Message',
+      prompt: 'Generate a friendly welcome message for new users joining the platform.',
+      description: 'Default welcome message prompt for onboarding',
+      created_by: ADMIN_EMAIL
+    });
+    console.log('  Created sample prompt');
+
+    // ── sample chat engine ────────────────────────────
+    await ChatEngine.create({
+      engine_name: 'OpenAI GPT-4',
+      description: 'OpenAI GPT-4 chat completion engine',
+      api_key: 'sk-placeholder-openai-key',
+      active: true
+    });
+    console.log('  Created sample chat engine');
 
     // ── summary ──────────────────────────────────────────
     console.log('\n========================================');

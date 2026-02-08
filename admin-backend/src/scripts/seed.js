@@ -6,6 +6,8 @@ const Role = require('../models/Role');
 const Topic = require('../models/Topic');
 const SystemInfo = require('../models/SystemInfo');
 const LoginTracker = require('../models/LoginTracker');
+const Prompt = require('../models/Prompt');
+const ChatEngine = require('../models/ChatEngine');
 const { ROLES } = require('../config/roles');
 
 const seedUsers = [
@@ -83,6 +85,54 @@ const seedTopics = [
     topic_name: 'Reporting & Analytics',
     description: 'Generating reports and interpreting platform metrics',
     created_by: 'owner@techlifecorp.com'
+  }
+];
+
+const seedPrompts = [
+  {
+    prompt_name: 'Welcome Message',
+    prompt: 'Generate a friendly welcome message for new users joining the platform.',
+    description: 'Default welcome message prompt for onboarding',
+    created_by: 'admin@techlifecorp.com'
+  },
+  {
+    prompt_name: 'Content Summary',
+    prompt: 'Summarize the following content in 3-5 concise bullet points.',
+    description: 'Summarization prompt for long-form content',
+    created_by: 'editor@techlifecorp.com'
+  },
+  {
+    prompt_name: 'Support Response',
+    prompt: 'Draft a professional and helpful support response to the following customer inquiry.',
+    description: 'Template prompt for customer support replies',
+    created_by: 'owner@techlifecorp.com'
+  },
+  {
+    prompt_name: 'Data Analysis',
+    prompt: 'Analyze the provided dataset and identify key trends, outliers, and actionable insights.',
+    description: 'Prompt for generating data analysis reports',
+    created_by: 'admin@techlifecorp.com'
+  }
+];
+
+const seedChatEngines = [
+  {
+    engine_name: 'OpenAI GPT-4',
+    description: 'OpenAI GPT-4 chat completion engine',
+    api_key: 'sk-placeholder-openai-key',
+    active: true
+  },
+  {
+    engine_name: 'Anthropic Claude',
+    description: 'Anthropic Claude conversational AI engine',
+    api_key: 'sk-placeholder-anthropic-key',
+    active: true
+  },
+  {
+    engine_name: 'Google Gemini',
+    description: 'Google Gemini multi-modal AI engine',
+    api_key: 'sk-placeholder-google-key',
+    active: false
   }
 ];
 
@@ -164,6 +214,26 @@ const seedDatabase = async () => {
     for (const infoData of seedSystemInfo) {
       const info = await SystemInfo.create(infoData);
       console.log(`Created systemInfo: ${info.companyOwner} v${info.version} (build ${info.buildNumber})`);
+    }
+
+    // Clear existing prompts
+    await Prompt.deleteMany({});
+    console.log('Cleared existing prompts');
+
+    // Create seed prompts
+    for (const promptData of seedPrompts) {
+      const prompt = await Prompt.create(promptData);
+      console.log(`Created prompt: ${prompt.prompt_name}`);
+    }
+
+    // Clear existing chat engines
+    await ChatEngine.deleteMany({});
+    console.log('Cleared existing chat engines');
+
+    // Create seed chat engines
+    for (const engineData of seedChatEngines) {
+      const engine = await ChatEngine.create(engineData);
+      console.log(`Created chat engine: ${engine.engine_name}`);
     }
 
     console.log('\n========================================');

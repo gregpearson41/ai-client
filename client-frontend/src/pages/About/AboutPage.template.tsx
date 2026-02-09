@@ -8,45 +8,16 @@ import {
   Chip,
   Avatar,
   Divider,
-  SvgIcon,
 } from '@mui/material';
-import SecurityIcon from '@mui/icons-material/Security';
-import SpeedIcon from '@mui/icons-material/Speed';
-import DevicesIcon from '@mui/icons-material/Devices';
-import BuildIcon from '@mui/icons-material/Build';
+import { AboutLogicState } from './AboutPage.logic';
 
-interface Feature {
-  icon: typeof SvgIcon;
-  title: string;
-  description: string;
+interface AboutTemplateProps {
+  state: AboutLogicState;
 }
 
-const features: Feature[] = [
-  {
-    icon: SecurityIcon,
-    title: 'Secure by Design',
-    description: 'No login required for client tools. Backend communications use secure HTTPS connections.',
-  },
-  {
-    icon: SpeedIcon,
-    title: 'High Performance',
-    description: 'Built with React 19 and optimised for speed. Real-time health monitoring with minimal latency.',
-  },
-  {
-    icon: DevicesIcon,
-    title: 'Responsive Design',
-    description: 'Fully responsive Material UI layout — works seamlessly on desktop, tablet, and mobile.',
-  },
-  {
-    icon: BuildIcon,
-    title: 'Powerful Tools',
-    description: 'Interactive utilities designed to make everyday tasks faster and more efficient.',
-  },
-];
+export const AboutTemplate: React.FC<AboutTemplateProps> = ({ state }) => {
+  const { features, techStack, currentDate } = state;
 
-const techStack = ['React 19', 'TypeScript', 'Material UI v7', 'React Router v7'];
-
-const AboutPage: React.FC = () => {
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, color: 'text.primary' }}>
@@ -144,12 +115,10 @@ const AboutPage: React.FC = () => {
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <Typography variant="body2" color="text.secondary">Last Updated</Typography>
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>{new Date().toLocaleDateString()}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>{currentDate}</Typography>
           </Grid>
         </Grid>
       </Card>
     </Box>
   );
 };
-
-export default AboutPage;

@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Layout from './components/Layout';
-import DashboardPage from './pages/DashboardPage';
-import ToolsPage from './pages/ToolsPage';
-import AboutPage from './pages/AboutPage';
-import HelpPage from './pages/HelpPage';
+import DashboardPage from './pages/Dashboard';
+import ToolsPage from './pages/Tools';
+import AboutPage from './pages/About';
+import HelpPage from './pages/Help';
 
 const theme = createTheme({
   palette: {

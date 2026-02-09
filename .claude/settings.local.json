@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\.claude-worktrees\\\\ai-client\\\\clever-goldstine\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\Downloads\\\\ai-client\" branch --show-current)",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\.claude-worktrees\\\\ai-client\\\\clever-goldstine\" add client-frontend/src/pages/ToolsPage_two.tsx client-frontend/src/pages/ToolsPage_three.tsx client-frontend/src/App.tsx client-frontend/src/components/TopBar.tsx)",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\.claude-worktrees\\\\ai-client\\\\clever-goldstine\" commit -m \"$\\(cat <<''EOF''\nAdd ToolsPage_two and ToolsPage_three with routing and navigation\n\n- Create ToolsPage_two and ToolsPage_three page components\n- Add /tools-two and /tools-three routes in App.tsx\n- Add navigation entries in TopBar.tsx\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\Downloads\\\\ai-client\" merge clever-goldstine)",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\Downloads\\\\ai-client\" log --oneline -3)",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\Downloads\\\\ai-client\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\gdpears\\\\Downloads\\\\ai-client\" log --oneline -5)"
+    ]
+  }
+}

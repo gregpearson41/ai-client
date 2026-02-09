@@ -76,6 +76,15 @@ const initDatabase = async () => {
     await LoginTracker.create({ userId: adminUser._id, dateTimeStamp: new Date('2025-12-01T08:30:00Z') });
     console.log('  Created sample login record');
 
+    // ── sample topic ─────────────────────────────────
+    await Topic.create({
+      topic_name: 'getting-started',
+      topic_label: 'Getting Started',
+      description: 'Introduction and initial setup guide for new users',
+      created_by: ADMIN_EMAIL
+    });
+    console.log('  Created sample topic');
+
     // ── sample chat engine ────────────────────────────
     const sampleEngine = await ChatEngine.create({
       engine_name: 'OpenAI GPT-4',

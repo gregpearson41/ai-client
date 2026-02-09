@@ -6,6 +6,7 @@ const ADMIN_API_URL = process.env.REACT_APP_ADMIN_API_URL || 'http://localhost:5
 export interface Topic {
   _id: string;
   topic_name: string;
+  topic_label: string;
   description: string;
 }
 

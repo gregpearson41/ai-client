@@ -36,6 +36,8 @@ const router = express.Router();
  *                         type: string
  *                       topic_name:
  *                         type: string
+ *                       topic_label:
+ *                         type: string
  *                       description:
  *                         type: string
  */

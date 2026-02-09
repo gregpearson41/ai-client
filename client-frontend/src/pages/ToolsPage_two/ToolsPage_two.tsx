@@ -100,7 +100,7 @@ const ToolsPage_two: React.FC = () => {
               </MenuItem>
               {topics.map((topic) => (
                 <MenuItem key={topic._id} value={topic._id}>
-                  {topic.topic_name}
+                  {topic.topic_label}
                 </MenuItem>
               ))}
             </TextField>

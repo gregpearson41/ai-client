@@ -23,6 +23,7 @@ const getTopics = async (req, res) => {
     if (search) {
       query.$or = [
         { topic_name: { $regex: search, $options: 'i' } },
+        { topic_label: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } }
       ];
     }
@@ -90,10 +91,11 @@ const getTopicById = async (req, res) => {
  */
 const createTopic = async (req, res) => {
   try {
-    const { topic_name, description, created_by } = req.body;
+    const { topic_name, topic_label, description, created_by } = req.body;
 
     const topic = await Topic.create({
       topic_name,
+      topic_label,
       description,
       created_by,
       created_date: new Date()
@@ -120,10 +122,11 @@ const createTopic = async (req, res) => {
  */
 const updateTopic = async (req, res) => {
   try {
-    const { topic_name, description, created_by, active } = req.body;
+    const { topic_name, topic_label, description, created_by, active } = req.body;
 
     const updateData = {};
     if (topic_name !== undefined) updateData.topic_name = topic_name;
+    if (topic_label !== undefined) updateData.topic_label = topic_label;
     if (description !== undefined) updateData.description = description;
     if (created_by !== undefined) updateData.created_by = created_by;
     if (active !== undefined) updateData.active = active;
@@ -225,8 +228,8 @@ const toggleTopicStatus = async (req, res) => {
 const getPublicTopics = async (req, res) => {
   try {
     const topics = await Topic.find({ active: true })
-      .select('_id topic_name description')
-      .sort({ topic_name: 1 });
+      .select('_id topic_name topic_label description')
+      .sort({ topic_label: 1 });
 
     res.json({
       success: true,

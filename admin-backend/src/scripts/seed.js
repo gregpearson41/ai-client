@@ -62,27 +62,32 @@ const seedRoles = [
 
 const seedTopics = [
   {
-    topic_name: 'Getting Started',
+    topic_name: 'getting-started',
+    topic_label: 'Getting Started',
     description: 'Introduction and initial setup guide for new users',
     created_by: 'admin@techlifecorp.com'
   },
   {
-    topic_name: 'User Management',
+    topic_name: 'user-management',
+    topic_label: 'User Management',
     description: 'Creating, updating, and managing user accounts and roles',
     created_by: 'admin@techlifecorp.com'
   },
   {
-    topic_name: 'Content Publishing',
+    topic_name: 'content-publishing',
+    topic_label: 'Content Publishing',
     description: 'Workflow for drafting, reviewing, and publishing content',
     created_by: 'owner@techlifecorp.com'
   },
   {
-    topic_name: 'API Integration',
+    topic_name: 'api-integration',
+    topic_label: 'API Integration',
     description: 'Connecting external services with the platform API',
     created_by: 'editor@techlifecorp.com'
   },
   {
-    topic_name: 'Reporting & Analytics',
+    topic_name: 'reporting-analytics',
+    topic_label: 'Reporting & Analytics',
     description: 'Generating reports and interpreting platform metrics',
     created_by: 'owner@techlifecorp.com'
   }

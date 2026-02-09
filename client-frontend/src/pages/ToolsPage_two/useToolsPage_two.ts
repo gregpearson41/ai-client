@@ -6,12 +6,19 @@ const ADMIN_API_URL = process.env.REACT_APP_ADMIN_API_URL || 'http://localhost:5
 export interface Topic {
   _id: string;
   topic_name: string;
+  topic_label: string;
   description: string;
 }
 
 export interface Prompt {
   _id: string;
   prompt_name: string;
+  description: string;
+}
+
+export interface ChatEngine {
+  _id: string;
+  engine_name: string;
   description: string;
 }
 
@@ -25,10 +32,29 @@ interface PromptListResponse {
   data: Prompt[];
 }
 
+interface ChatEngineListResponse {
+  success: boolean;
+  data: ChatEngine[];
+}
+
 export interface QuestionFormData {
   question: string;
   topic: string;
   prompt: string;
+  chat_engine: string;
+}
+
+export interface ChatResponse {
+  response: string;
+  engine: string;
+  topic: { topic_name: string; topic_label: string } | null;
+  prompt: { prompt_name: string } | null;
+}
+
+interface ChatPromptApiResponse {
+  success: boolean;
+  data: ChatResponse;
+  message?: string;
 }
 
 const useToolsPage_two = () => {
@@ -42,15 +68,24 @@ const useToolsPage_two = () => {
   const [promptsLoading, setPromptsLoading] = useState(true);
   const [promptsError, setPromptsError] = useState(false);
 
+  // Chat engines state
+  const [chatEngines, setChatEngines] = useState<ChatEngine[]>([]);
+  const [chatEnginesLoading, setChatEnginesLoading] = useState(true);
+  const [chatEnginesError, setChatEnginesError] = useState(false);
+
   // Form state
   const [formData, setFormData] = useState<QuestionFormData>({
     question: '',
     topic: '',
     prompt: '',
+    chat_engine: '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
+
+  // AI response state
+  const [aiResponse, setAiResponse] = useState<ChatResponse | null>(null);
 
   const fetchTopics = useCallback(async () => {
     try {
@@ -82,10 +117,26 @@ const useToolsPage_two = () => {
     }
   }, []);
 
+  const fetchChatEngines = useCallback(async () => {
+    try {
+      setChatEnginesLoading(true);
+      const res = await fetch(`${ADMIN_API_URL}/api/public/chat-engines`);
+      if (!res.ok) throw new Error('Failed to fetch chat engines');
+      const data: ChatEngineListResponse = await res.json();
+      setChatEngines(data.data);
+      setChatEnginesError(false);
+    } catch {
+      setChatEnginesError(true);
+    } finally {
+      setChatEnginesLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchTopics();
     fetchPrompts();
-  }, [fetchTopics, fetchPrompts]);
+    fetchChatEngines();
+  }, [fetchTopics, fetchPrompts, fetchChatEngines]);
 
   const handleFormChange = (field: keyof QuestionFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -95,7 +146,7 @@ const useToolsPage_two = () => {
   };
 
   const resetForm = () => {
-    setFormData({ question: '', topic: '', prompt: '' });
+    setFormData({ question: '', topic: '', prompt: '', chat_engine: '' });
     setSubmitError('');
     setSubmitSuccess('');
   };
@@ -105,38 +156,41 @@ const useToolsPage_two = () => {
       setSubmitError('Please enter a question.');
       return;
     }
-    if (!formData.topic) {
-      setSubmitError('Please select a topic.');
+    if (!formData.chat_engine) {
+      setSubmitError('Please select a chat engine.');
       return;
     }
 
     setSubmitting(true);
     setSubmitError('');
     setSubmitSuccess('');
+    setAiResponse(null);
 
     try {
-      const selectedTopic = topics.find((t) => t._id === formData.topic);
-      const selectedPrompt = prompts.find((p) => p._id === formData.prompt);
       const payload = {
         question: formData.question,
-        topic_id: formData.topic,
-        topic_name: selectedTopic?.topic_name || '',
+        topic_id: formData.topic || null,
         prompt_id: formData.prompt || null,
-        prompt_name: selectedPrompt?.prompt_name || '',
+        chat_engine_id: formData.chat_engine,
       };
 
-      const res = await fetch(`${API_BASE_URL}/api/questions`, {
+      const res = await fetch(`${ADMIN_API_URL}/api/public/chat-prompt`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error('Failed to submit question');
+      const data: ChatPromptApiResponse = await res.json();
 
-      setSubmitSuccess('Your question has been submitted successfully!');
-      resetForm();
-    } catch {
-      setSubmitError('Failed to submit your question. Please try again.');
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Failed to get a response');
+      }
+
+      setAiResponse(data.data);
+      setSubmitSuccess(`Response received from ${data.data.engine}`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to submit your question. Please try again.';
+      setSubmitError(message);
     } finally {
       setSubmitting(false);
     }
@@ -149,10 +203,14 @@ const useToolsPage_two = () => {
     prompts,
     promptsLoading,
     promptsError,
+    chatEngines,
+    chatEnginesLoading,
+    chatEnginesError,
     formData,
     submitting,
     submitError,
     submitSuccess,
+    aiResponse,
     handleFormChange,
     handleSubmit,
     resetForm,

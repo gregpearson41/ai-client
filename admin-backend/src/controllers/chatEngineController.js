@@ -208,11 +208,36 @@ const toggleChatEngineStatus = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get all active chat engines (public, no auth)
+ * @route   GET /api/public/chat-engines
+ * @access  Public
+ */
+const getPublicChatEngines = async (req, res) => {
+  try {
+    const chatEngines = await ChatEngine.find({ active: true })
+      .select('_id engine_name description')
+      .sort({ engine_name: 1 });
+
+    res.json({
+      success: true,
+      data: chatEngines
+    });
+  } catch (error) {
+    console.error('Get public chat engines error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching chat engines'
+    });
+  }
+};
+
 module.exports = {
   getChatEngines,
   getChatEngineById,
   createChatEngine,
   updateChatEngine,
   deleteChatEngine,
-  toggleChatEngineStatus
+  toggleChatEngineStatus,
+  getPublicChatEngines
 };

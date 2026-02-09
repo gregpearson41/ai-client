@@ -5,6 +5,7 @@ import api from '../../services/api';
 export interface Topic {
   _id: string;
   topic_name: string;
+  topic_label: string;
   description: string;
   active: boolean;
   created_by: string;
@@ -35,6 +36,7 @@ interface DeleteResponse {
 
 export interface TopicFormData {
   topic_name: string;
+  topic_label: string;
   description: string;
   active: boolean;
 }
@@ -50,6 +52,7 @@ const useTopicsPage = () => {
   // Form state
   const [formData, setFormData] = useState<TopicFormData>({
     topic_name: '',
+    topic_label: '',
     description: '',
     active: true,
   });
@@ -85,7 +88,7 @@ const useTopicsPage = () => {
   };
 
   const resetForm = () => {
-    setFormData({ topic_name: '', description: '', active: true });
+    setFormData({ topic_name: '', topic_label: '', description: '', active: true });
     setEditingId(null);
     setSubmitError('');
     setSubmitSuccess('');
@@ -96,6 +99,14 @@ const useTopicsPage = () => {
       setSubmitError('Topic name is required.');
       return;
     }
+    if (/\s/.test(formData.topic_name)) {
+      setSubmitError('Topic name must not contain spaces.');
+      return;
+    }
+    if (!formData.topic_label.trim()) {
+      setSubmitError('Topic label is required.');
+      return;
+    }
 
     setSubmitting(true);
     setSubmitError('');
@@ -104,6 +115,7 @@ const useTopicsPage = () => {
     try {
       const payload = {
         topic_name: formData.topic_name,
+        topic_label: formData.topic_label,
         description: formData.description,
         active: formData.active,
         created_by: user?.email || '',
@@ -128,6 +140,7 @@ const useTopicsPage = () => {
   const handleEdit = (topic: Topic) => {
     setFormData({
       topic_name: topic.topic_name,
+      topic_label: topic.topic_label || '',
       description: topic.description || '',
       active: topic.active,
     });

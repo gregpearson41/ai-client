@@ -5,6 +5,17 @@ const topicSchema = new mongoose.Schema(
     topic_name: {
       type: String,
       required: [true, 'Topic name is required'],
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return !/\s/.test(v);
+        },
+        message: 'Topic name must not contain spaces'
+      }
+    },
+    topic_label: {
+      type: String,
+      required: [true, 'Topic label is required'],
       trim: true
     },
     description: {
@@ -37,6 +48,7 @@ const topicSchema = new mongoose.Schema(
 
 // Index for faster queries
 topicSchema.index({ topic_name: 1 });
+topicSchema.index({ topic_label: 1 });
 topicSchema.index({ created_by: 1 });
 topicSchema.index({ active: 1 });
 

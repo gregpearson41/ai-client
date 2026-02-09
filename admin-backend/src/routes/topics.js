@@ -134,10 +134,15 @@ router.get(
  *             type: object
  *             required:
  *               - topic_name
+ *               - topic_label
  *               - created_by
  *             properties:
  *               topic_name:
  *                 type: string
+ *                 description: Must not contain spaces
+ *               topic_label:
+ *                 type: string
+ *                 description: Display label for the topic
  *               description:
  *                 type: string
  *               created_by:
@@ -151,7 +156,10 @@ router.get(
 router.post(
   '/',
   [
-    body('topic_name').notEmpty().withMessage('Topic name is required'),
+    body('topic_name')
+      .notEmpty().withMessage('Topic name is required')
+      .matches(/^\S+$/).withMessage('Topic name must not contain spaces'),
+    body('topic_label').notEmpty().withMessage('Topic label is required'),
     body('description').optional().isString(),
     body('created_by').notEmpty().withMessage('Created by is required')
   ],
@@ -183,6 +191,10 @@ router.post(
  *             properties:
  *               topic_name:
  *                 type: string
+ *                 description: Must not contain spaces
+ *               topic_label:
+ *                 type: string
+ *                 description: Display label for the topic
  *               description:
  *                 type: string
  *               created_by:
@@ -197,7 +209,11 @@ router.put(
   '/:id',
   [
     param('id').isMongoId().withMessage('Invalid topic ID'),
-    body('topic_name').optional().notEmpty().withMessage('Topic name cannot be empty'),
+    body('topic_name')
+      .optional()
+      .notEmpty().withMessage('Topic name cannot be empty')
+      .matches(/^\S+$/).withMessage('Topic name must not contain spaces'),
+    body('topic_label').optional().notEmpty().withMessage('Topic label cannot be empty'),
     body('description').optional().isString(),
     body('created_by').optional().notEmpty().withMessage('Created by cannot be empty')
   ],

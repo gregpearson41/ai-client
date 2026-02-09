@@ -101,6 +101,16 @@ const TopicsPage: React.FC = () => {
             disabled={submitting}
             fullWidth
             required
+            helperText="Must not contain spaces (e.g. general-knowledge, ai-tools)"
+          />
+          <TextField
+            label="Topic Label"
+            value={formData.topic_label}
+            onChange={(e) => handleFormChange('topic_label', e.target.value)}
+            disabled={submitting}
+            fullWidth
+            required
+            helperText="Display label shown to users in dropdowns"
           />
           <TextField
             label="Description"
@@ -228,6 +238,7 @@ const TopicsPage: React.FC = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Label</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Created By</TableCell>
@@ -257,6 +268,7 @@ const TopicsPage: React.FC = () => {
                             color="primary"
                           />
                         </TableCell>
+                        <TableCell>{topic.topic_label || '—'}</TableCell>
                         <TableCell
                           sx={{
                             maxWidth: 280,

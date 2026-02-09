@@ -43,6 +43,11 @@ router.use(authenticate);
  *           type: string
  *         description: Filter by creator
  *       - in: query
+ *         name: active
+ *         schema:
+ *           type: boolean
+ *         description: Filter by active status
+ *       - in: query
  *         name: search
  *         schema:
  *           type: string
@@ -221,6 +226,42 @@ router.put(
  *       404:
  *         description: Topic not found
  */
+/**
+ * @swagger
+ * /api/topics/{id}/status:
+ *   patch:
+ *     summary: Toggle topic active status
+ *     tags: [Topics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Topic ID
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               active:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Topic status updated
+ *       404:
+ *         description: Topic not found
+ */
+router.patch(
+  '/:id/status',
+  [param('id').isMongoId().withMessage('Invalid topic ID')],
+  validate,
+  topicController.toggleTopicStatus
+);
+
 router.delete(
   '/:id',
   [param('id').isMongoId().withMessage('Invalid topic ID')],

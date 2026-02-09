@@ -183,10 +183,35 @@ const deletePrompt = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get all prompts (public, no auth)
+ * @route   GET /api/public/prompts
+ * @access  Public
+ */
+const getPublicPrompts = async (req, res) => {
+  try {
+    const prompts = await Prompt.find()
+      .select('_id prompt_name description')
+      .sort({ prompt_name: 1 });
+
+    res.json({
+      success: true,
+      data: prompts
+    });
+  } catch (error) {
+    console.error('Get public prompts error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching prompts'
+    });
+  }
+};
+
 module.exports = {
   getPrompts,
   getPromptById,
   createPrompt,
   updatePrompt,
-  deletePrompt
+  deletePrompt,
+  getPublicPrompts
 };

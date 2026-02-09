@@ -23,6 +23,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import InfoIcon from '@mui/icons-material/Info';
 import HelpIcon from '@mui/icons-material/Help';
+import TopicIcon from '@mui/icons-material/Topic';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import { useAuth } from '../contexts/AuthContext';
@@ -40,7 +41,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'AI Prompt', icon: <DashboardIcon />, path: '/ai-prompt' },
-  { text: 'Chat Engines', icon: <SmartToyIcon />, path: '/chat-engines' }
+  { text: 'Chat Engines', icon: <SmartToyIcon />, path: '/chat-engines' },
+  { text: 'Topics', icon: <TopicIcon />, path: '/topics' }
 ];
 
 const Layout: React.FC = () => {

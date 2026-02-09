@@ -1,1 +1,1 @@
-1. 
+1. Can you add an item to topic model, topic_label (this will be what the client-frontend drop down selects) then change topic_name to validate that it does not have spaces in the string

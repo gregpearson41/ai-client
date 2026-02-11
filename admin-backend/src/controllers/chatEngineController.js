@@ -86,12 +86,13 @@ const getChatEngineById = async (req, res) => {
  */
 const createChatEngine = async (req, res) => {
   try {
-    const { engine_name, description, api_key, active } = req.body;
+    const { engine_name, description, api_key, chat_apiUrl, active } = req.body;
 
     const chatEngine = await ChatEngine.create({
       engine_name,
       description,
       api_key,
+      chat_apiUrl,
       active: active !== undefined ? active : true,
       creation_date: new Date()
     });
@@ -117,11 +118,11 @@ const createChatEngine = async (req, res) => {
  */
 const updateChatEngine = async (req, res) => {
   try {
-    const { engine_name, description, api_key, active } = req.body;
+    const { engine_name, description, api_key, chat_apiUrl, active } = req.body;
 
     const chatEngine = await ChatEngine.findByIdAndUpdate(
       req.params.id,
-      { engine_name, description, api_key, active },
+      { engine_name, description, api_key, chat_apiUrl, active },
       { new: true, runValidators: true }
     );
 

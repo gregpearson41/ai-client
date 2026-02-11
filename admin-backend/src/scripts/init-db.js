@@ -81,6 +81,7 @@ const initDatabase = async () => {
       engine_name: 'OpenAI GPT-4',
       description: 'OpenAI GPT-4 chat completion engine',
       api_key: 'sk-placeholder-openai-key',
+      chat_apiUrl: 'https://api.openai.com/v1/chat/completions',
       active: true
     });
     console.log('  Created sample chat engine');

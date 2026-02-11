@@ -62,27 +62,32 @@ const seedRoles = [
 
 const seedTopics = [
   {
-    topic_name: 'Getting Started',
+    topic_name: 'getting-started',
+    topic_label: 'Getting Started',
     description: 'Introduction and initial setup guide for new users',
     created_by: 'admin@techlifecorp.com'
   },
   {
-    topic_name: 'User Management',
+    topic_name: 'user-management',
+    topic_label: 'User Management',
     description: 'Creating, updating, and managing user accounts and roles',
     created_by: 'admin@techlifecorp.com'
   },
   {
-    topic_name: 'Content Publishing',
+    topic_name: 'content-publishing',
+    topic_label: 'Content Publishing',
     description: 'Workflow for drafting, reviewing, and publishing content',
     created_by: 'owner@techlifecorp.com'
   },
   {
-    topic_name: 'API Integration',
+    topic_name: 'api-integration',
+    topic_label: 'API Integration',
     description: 'Connecting external services with the platform API',
     created_by: 'editor@techlifecorp.com'
   },
   {
-    topic_name: 'Reporting & Analytics',
+    topic_name: 'reporting-analytics',
+    topic_label: 'Reporting & Analytics',
     description: 'Generating reports and interpreting platform metrics',
     created_by: 'owner@techlifecorp.com'
   }
@@ -120,18 +125,21 @@ const seedChatEngines = [
     engine_name: 'OpenAI GPT-4',
     description: 'OpenAI GPT-4 chat completion engine',
     api_key: 'sk-placeholder-openai-key',
+    chat_apiUrl: 'https://api.openai.com/v1/chat/completions',
     active: true
   },
   {
     engine_name: 'Anthropic Claude',
     description: 'Anthropic Claude conversational AI engine',
     api_key: 'sk-placeholder-anthropic-key',
+    chat_apiUrl: 'https://api.anthropic.com/v1/messages',
     active: true
   },
   {
     engine_name: 'Google Gemini',
     description: 'Google Gemini multi-modal AI engine',
     api_key: 'sk-placeholder-google-key',
+    chat_apiUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
     active: false
   }
 ];

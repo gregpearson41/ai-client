@@ -20,6 +20,10 @@ const chatEngineSchema = new mongoose.Schema(
       required: [true, 'API key is required'],
       trim: true
     },
+    chat_apiUrl: {
+      type: String,
+      trim: true
+    },
     active: {
       type: Boolean,
       default: true

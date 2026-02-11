@@ -22,9 +22,6 @@ const ToolsPage_two: React.FC = () => {
     topics,
     topicsLoading,
     topicsError,
-    prompts,
-    promptsLoading,
-    promptsError,
     chatEngines,
     chatEnginesLoading,
     chatEnginesError,
@@ -99,7 +96,7 @@ const ToolsPage_two: React.FC = () => {
                   ? 'Loading topics...'
                   : topicsError
                   ? 'Unable to load topics. Please try refreshing.'
-                  : 'Select a topic for your question'
+                  : 'Select a topic (this will automatically use the associated prompt)'
               }
               error={topicsError}
             >
@@ -109,32 +106,6 @@ const ToolsPage_two: React.FC = () => {
               {topics.map((topic) => (
                 <MenuItem key={topic._id} value={topic._id}>
                   {topic.topic_label}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              select
-              label="Prompt"
-              value={formData.prompt}
-              onChange={(e) => handleFormChange('prompt', e.target.value)}
-              disabled={submitting || promptsLoading}
-              fullWidth
-              helperText={
-                promptsLoading
-                  ? 'Loading prompts...'
-                  : promptsError
-                  ? 'Unable to load prompts. Please try refreshing.'
-                  : 'Select a prompt to use (optional)'
-              }
-              error={promptsError}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {prompts.map((prompt) => (
-                <MenuItem key={prompt._id} value={prompt._id}>
-                  {prompt.prompt_name}
                 </MenuItem>
               ))}
             </TextField>

@@ -23,6 +23,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MenuItem from '@mui/material/MenuItem';
 import useTopicsPage from './useTopicsPage';
 
 const TopicsPage: React.FC = () => {
@@ -30,6 +31,8 @@ const TopicsPage: React.FC = () => {
     topics,
     loading,
     error,
+    prompts,
+    promptsLoading,
     formData,
     submitting,
     submitError,
@@ -121,6 +124,28 @@ const TopicsPage: React.FC = () => {
             multiline
             minRows={3}
           />
+          <TextField
+            select
+            label="Linked Prompt"
+            value={formData.prompt}
+            onChange={(e) => handleFormChange('prompt', e.target.value)}
+            disabled={submitting || promptsLoading}
+            fullWidth
+            helperText={
+              promptsLoading
+                ? 'Loading prompts...'
+                : 'Select a prompt to use with this topic (optional)'
+            }
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {prompts.map((prompt) => (
+              <MenuItem key={prompt._id} value={prompt._id}>
+                {prompt.prompt_name}
+              </MenuItem>
+            ))}
+          </TextField>
           <FormControlLabel
             control={
               <Switch
@@ -239,6 +264,7 @@ const TopicsPage: React.FC = () => {
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Label</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Linked Prompt</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Created By</TableCell>
@@ -269,6 +295,18 @@ const TopicsPage: React.FC = () => {
                           />
                         </TableCell>
                         <TableCell>{topic.topic_label || '—'}</TableCell>
+                        <TableCell>
+                          {topic.prompt ? (
+                            <Chip
+                              label={topic.prompt.prompt_name}
+                              size="small"
+                              variant="outlined"
+                              color="secondary"
+                            />
+                          ) : (
+                            <Typography variant="body2" color="text.secondary">—</Typography>
+                          )}
+                        </TableCell>
                         <TableCell
                           sx={{
                             maxWidth: 280,

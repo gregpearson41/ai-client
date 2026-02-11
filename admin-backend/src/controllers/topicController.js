@@ -29,6 +29,7 @@ const getTopics = async (req, res) => {
 
     // Execute query with pagination
     const topics = await Topic.find(query)
+      .populate('prompt', 'prompt_name description')
       .sort({ created_date: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -61,7 +62,7 @@ const getTopics = async (req, res) => {
  */
 const getTopicById = async (req, res) => {
   try {
-    const topic = await Topic.findById(req.params.id);
+    const topic = await Topic.findById(req.params.id).populate('prompt', 'prompt_name description');
 
     if (!topic) {
       return res.status(404).json({
@@ -90,13 +91,14 @@ const getTopicById = async (req, res) => {
  */
 const createTopic = async (req, res) => {
   try {
-    const { topic_name, topic_label, description, created_by } = req.body;
+    const { topic_name, topic_label, description, created_by, prompt } = req.body;
 
     const topic = await Topic.create({
       topic_name,
       topic_label,
       description,
       created_by,
+      prompt: prompt || null,
       created_date: new Date()
     });
 
@@ -121,7 +123,7 @@ const createTopic = async (req, res) => {
  */
 const updateTopic = async (req, res) => {
   try {
-    const { topic_name, topic_label, description, created_by, active } = req.body;
+    const { topic_name, topic_label, description, created_by, active, prompt } = req.body;
 
     const updateData = {};
     if (topic_name !== undefined) updateData.topic_name = topic_name;
@@ -129,6 +131,7 @@ const updateTopic = async (req, res) => {
     if (description !== undefined) updateData.description = description;
     if (created_by !== undefined) updateData.created_by = created_by;
     if (active !== undefined) updateData.active = active;
+    if (prompt !== undefined) updateData.prompt = prompt || null;
 
     const topic = await Topic.findByIdAndUpdate(
       req.params.id,
@@ -227,7 +230,8 @@ const toggleTopicStatus = async (req, res) => {
 const getPublicTopics = async (req, res) => {
   try {
     const topics = await Topic.find({ active: true })
-      .select('_id topic_name topic_label description')
+      .populate('prompt', 'prompt_name prompt description')
+      .select('_id topic_name topic_label description prompt')
       .sort({ topic_label: 1 });
 
     res.json({

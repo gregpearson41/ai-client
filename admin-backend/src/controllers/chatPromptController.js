@@ -163,12 +163,16 @@ const submitChatPrompt = async (req, res) => {
     // Look up topic (optional)
     let topic = null;
     if (topic_id) {
-      topic = await Topic.findById(topic_id);
+      topic = await Topic.findById(topic_id).populate('prompt');
     }
 
     // Look up prompt (optional)
     let prompt = null;
-    if (prompt_id) {
+    // Use topic's linked prompt if available
+    if (topic && topic.prompt) {
+      prompt = topic.prompt;
+    } else if (prompt_id) {
+      // Fallback for backward compatibility
       prompt = await Prompt.findById(prompt_id);
     }
 

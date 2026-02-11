@@ -8,6 +8,12 @@ export interface Topic {
   topic_name: string;
   topic_label: string;
   description: string;
+  prompt?: {
+    _id: string;
+    prompt_name: string;
+    prompt: string;
+    description?: string;
+  } | null;
 }
 
 export interface Prompt {
@@ -28,11 +34,6 @@ interface TopicListResponse {
   data: Topic[];
 }
 
-interface PromptListResponse {
-  success: boolean;
-  data: Prompt[];
-}
-
 interface ChatEngineListResponse {
   success: boolean;
   data: ChatEngine[];
@@ -41,7 +42,6 @@ interface ChatEngineListResponse {
 export interface QuestionFormData {
   question: string;
   topic: string;
-  prompt: string;
   chat_engine: string;
 }
 
@@ -64,11 +64,6 @@ const useToolsPage_two = () => {
   const [topicsLoading, setTopicsLoading] = useState(true);
   const [topicsError, setTopicsError] = useState(false);
 
-  // Prompts state
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [promptsLoading, setPromptsLoading] = useState(true);
-  const [promptsError, setPromptsError] = useState(false);
-
   // Chat engines state
   const [chatEngines, setChatEngines] = useState<ChatEngine[]>([]);
   const [chatEnginesLoading, setChatEnginesLoading] = useState(true);
@@ -78,7 +73,6 @@ const useToolsPage_two = () => {
   const [formData, setFormData] = useState<QuestionFormData>({
     question: '',
     topic: '',
-    prompt: '',
     chat_engine: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -103,21 +97,6 @@ const useToolsPage_two = () => {
     }
   }, []);
 
-  const fetchPrompts = useCallback(async () => {
-    try {
-      setPromptsLoading(true);
-      const res = await fetch(`${ADMIN_API_URL}/api/public/prompts`);
-      if (!res.ok) throw new Error('Failed to fetch prompts');
-      const data: PromptListResponse = await res.json();
-      setPrompts(data.data);
-      setPromptsError(false);
-    } catch {
-      setPromptsError(true);
-    } finally {
-      setPromptsLoading(false);
-    }
-  }, []);
-
   const fetchChatEngines = useCallback(async () => {
     try {
       setChatEnginesLoading(true);
@@ -135,9 +114,8 @@ const useToolsPage_two = () => {
 
   useEffect(() => {
     fetchTopics();
-    fetchPrompts();
     fetchChatEngines();
-  }, [fetchTopics, fetchPrompts, fetchChatEngines]);
+  }, [fetchTopics, fetchChatEngines]);
 
   const handleFormChange = (field: keyof QuestionFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -147,7 +125,7 @@ const useToolsPage_two = () => {
   };
 
   const resetForm = () => {
-    setFormData({ question: '', topic: '', prompt: '', chat_engine: '' });
+    setFormData({ question: '', topic: '', chat_engine: '' });
     setSubmitError('');
     setSubmitSuccess('');
   };
@@ -171,7 +149,6 @@ const useToolsPage_two = () => {
       const payload = {
         question: formData.question,
         topic_id: formData.topic || null,
-        prompt_id: formData.prompt || null,
         chat_engine_id: formData.chat_engine,
       };
 
@@ -201,9 +178,6 @@ const useToolsPage_two = () => {
     topics,
     topicsLoading,
     topicsError,
-    prompts,
-    promptsLoading,
-    promptsError,
     chatEngines,
     chatEnginesLoading,
     chatEnginesError,

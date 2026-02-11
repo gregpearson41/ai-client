@@ -2,6 +2,23 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 
+interface Prompt {
+  _id: string;
+  prompt_name: string;
+  description?: string;
+}
+
+interface PromptListResponse {
+  success: boolean;
+  data: Prompt[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+
 export interface Topic {
   _id: string;
   topic_name: string;
@@ -10,6 +27,11 @@ export interface Topic {
   active: boolean;
   created_by: string;
   created_date: string;
+  prompt?: {
+    _id: string;
+    prompt_name: string;
+    description?: string;
+  } | null;
 }
 
 interface TopicListResponse {
@@ -39,6 +61,7 @@ export interface TopicFormData {
   topic_label: string;
   description: string;
   active: boolean;
+  prompt: string;
 }
 
 const useTopicsPage = () => {
@@ -49,12 +72,17 @@ const useTopicsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Prompts state
+  const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [promptsLoading, setPromptsLoading] = useState(true);
+
   // Form state
   const [formData, setFormData] = useState<TopicFormData>({
     topic_name: '',
     topic_label: '',
     description: '',
     active: true,
+    prompt: '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -79,16 +107,29 @@ const useTopicsPage = () => {
     }
   }, []);
 
+  const fetchPrompts = useCallback(async () => {
+    try {
+      setPromptsLoading(true);
+      const res = await api.get<PromptListResponse>('/api/prompts?limit=100');
+      setPrompts(res.data);
+    } catch (error) {
+      console.error('Failed to fetch prompts:', error);
+    } finally {
+      setPromptsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchTopics();
-  }, [fetchTopics]);
+    fetchPrompts();
+  }, [fetchTopics, fetchPrompts]);
 
   const handleFormChange = (field: keyof TopicFormData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const resetForm = () => {
-    setFormData({ topic_name: '', topic_label: '', description: '', active: true });
+    setFormData({ topic_name: '', topic_label: '', description: '', active: true, prompt: '' });
     setEditingId(null);
     setSubmitError('');
     setSubmitSuccess('');
@@ -119,6 +160,7 @@ const useTopicsPage = () => {
         description: formData.description,
         active: formData.active,
         created_by: user?.email || '',
+        prompt: formData.prompt || null,
       };
 
       if (editingId) {
@@ -143,6 +185,7 @@ const useTopicsPage = () => {
       topic_label: topic.topic_label || '',
       description: topic.description || '',
       active: topic.active,
+      prompt: topic.prompt?._id || '',
     });
     setEditingId(topic._id);
     setSubmitError('');
@@ -180,6 +223,8 @@ const useTopicsPage = () => {
     topics,
     loading,
     error,
+    prompts,
+    promptsLoading,
     formData,
     submitting,
     submitError,

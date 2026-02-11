@@ -161,7 +161,8 @@ router.post(
       .matches(/^\S+$/).withMessage('Topic name must not contain spaces'),
     body('topic_label').notEmpty().withMessage('Topic label is required'),
     body('description').optional().isString(),
-    body('created_by').notEmpty().withMessage('Created by is required')
+    body('created_by').notEmpty().withMessage('Created by is required'),
+    body('prompt').optional({ values: 'null' }).isMongoId().withMessage('Invalid prompt ID')
   ],
   validate,
   topicController.createTopic
@@ -215,7 +216,8 @@ router.put(
       .matches(/^\S+$/).withMessage('Topic name must not contain spaces'),
     body('topic_label').optional().notEmpty().withMessage('Topic label cannot be empty'),
     body('description').optional().isString(),
-    body('created_by').optional().notEmpty().withMessage('Created by cannot be empty')
+    body('created_by').optional().notEmpty().withMessage('Created by cannot be empty'),
+    body('prompt').optional({ values: 'null' }).isMongoId().withMessage('Invalid prompt ID')
   ],
   validate,
   topicController.updateTopic

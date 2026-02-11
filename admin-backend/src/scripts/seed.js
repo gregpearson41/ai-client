@@ -152,6 +152,14 @@ const seedSystemInfo = [
   }
 ];
 
+const topicPromptMap = {
+  'getting-started': 'Welcome Message',
+  'user-management': 'Support Response',
+  'content-publishing': 'Content Summary',
+  'api-integration': 'Data Analysis',
+  'reporting-analytics': 'Data Analysis'
+};
+
 const seedDatabase = async () => {
   try {
     // Connect to MongoDB
@@ -190,12 +198,6 @@ const seedDatabase = async () => {
     // Clear existing topics
     await Topic.deleteMany({});
     console.log('Cleared existing topics');
-
-    // Create seed topics
-    for (const topicData of seedTopics) {
-      const topic = await Topic.create(topicData);
-      console.log(`Created topic: ${topic.topic_name}`);
-    }
 
     // Clear existing loginTracker
     await LoginTracker.deleteMany({});
@@ -247,13 +249,25 @@ const seedDatabase = async () => {
       'Support Response': 'OpenAI GPT-4',
       'Data Analysis': 'Anthropic Claude'
     };
+    const createdPrompts = {};
     for (const promptData of seedPrompts) {
       const engineName = promptEngineMap[promptData.prompt_name];
       const prompt = await Prompt.create({
         ...promptData,
         chat_engine: engineName ? createdEngines[engineName] : null
       });
+      createdPrompts[prompt.prompt_name] = prompt._id;
       console.log(`Created prompt: ${prompt.prompt_name} → ${engineName || 'no engine'}`);
+    }
+
+    // Create seed topics with prompt linkage
+    for (const topicData of seedTopics) {
+      const promptName = topicPromptMap[topicData.topic_name];
+      const topic = await Topic.create({
+        ...topicData,
+        prompt: promptName ? createdPrompts[promptName] : null
+      });
+      console.log(`Created topic: ${topic.topic_name} → ${promptName || 'no prompt'}`);
     }
 
     console.log('\n========================================');

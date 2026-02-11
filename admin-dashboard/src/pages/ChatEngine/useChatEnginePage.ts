@@ -6,6 +6,7 @@ export interface ChatEngine {
   engine_name: string;
   description: string;
   api_key: string;
+  chat_apiUrl: string;
   active: boolean;
   creation_date: string;
 }
@@ -36,6 +37,7 @@ export interface ChatEngineFormData {
   engine_name: string;
   description: string;
   api_key: string;
+  chat_apiUrl: string;
   active: boolean;
 }
 
@@ -50,6 +52,7 @@ const useChatEnginePage = () => {
     engine_name: '',
     description: '',
     api_key: '',
+    chat_apiUrl: '',
     active: true,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -84,7 +87,7 @@ const useChatEnginePage = () => {
   };
 
   const resetForm = () => {
-    setFormData({ engine_name: '', description: '', api_key: '', active: true });
+    setFormData({ engine_name: '', description: '', api_key: '', chat_apiUrl: '', active: true });
     setEditingId(null);
     setSubmitError('');
     setSubmitSuccess('');
@@ -122,6 +125,7 @@ const useChatEnginePage = () => {
       engine_name: engine.engine_name,
       description: engine.description || '',
       api_key: engine.api_key,
+      chat_apiUrl: engine.chat_apiUrl || '',
       active: engine.active,
     });
     setEditingId(engine._id);

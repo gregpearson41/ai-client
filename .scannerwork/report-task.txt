@@ -1,0 +1,6 @@
+projectKey=ai-client
+serverUrl=http://172.24.1.159:9000/sonar
+serverVersion=25.6.0.109173
+dashboardUrl=http://172.24.1.159:9000/sonar/dashboard?id=ai-client
+ceTaskId=3c58d292-9cab-4330-aff2-0cd0a7845e7e
+ceTaskUrl=http://172.24.1.159:9000/sonar/api/ce/task?id=3c58d292-9cab-4330-aff2-0cd0a7845e7e

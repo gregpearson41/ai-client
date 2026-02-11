@@ -120,6 +120,14 @@ const ChatEnginePage: React.FC = () => {
             fullWidth
             required
           />
+          <TextField
+            label="Chat API URL"
+            value={formData.chat_apiUrl}
+            onChange={(e) => handleFormChange('chat_apiUrl', e.target.value)}
+            disabled={submitting}
+            fullWidth
+            placeholder="https://api.openai.com/v1/chat/completions"
+          />
           <FormControlLabel
             control={
               <Switch
@@ -237,6 +245,7 @@ const ChatEnginePage: React.FC = () => {
                       <TableCell sx={{ fontWeight: 700 }}>Engine Name</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>API Key</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Chat API URL</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Created</TableCell>
                       <TableCell sx={{ fontWeight: 700 }} align="right">
@@ -285,6 +294,18 @@ const ChatEnginePage: React.FC = () => {
                           }}
                         >
                           {engine.api_key.slice(0, 8)}{'••••••••'}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            maxWidth: 220,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            fontFamily: 'monospace',
+                            fontSize: '0.8rem',
+                          }}
+                        >
+                          {engine.chat_apiUrl || '—'}
                         </TableCell>
                         <TableCell>
                           <Chip

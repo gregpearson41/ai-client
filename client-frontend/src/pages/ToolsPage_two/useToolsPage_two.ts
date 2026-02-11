@@ -20,6 +20,7 @@ export interface ChatEngine {
   _id: string;
   engine_name: string;
   description: string;
+  chat_apiUrl: string;
 }
 
 interface TopicListResponse {

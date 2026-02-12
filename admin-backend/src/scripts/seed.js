@@ -6,6 +6,8 @@ const Role = require('../models/Role');
 const Topic = require('../models/Topic');
 const SystemInfo = require('../models/SystemInfo');
 const LoginTracker = require('../models/LoginTracker');
+const Prompt = require('../models/Prompt');
+const ChatEngine = require('../models/ChatEngine');
 const { ROLES } = require('../config/roles');
 
 const seedUsers = [
@@ -60,29 +62,85 @@ const seedRoles = [
 
 const seedTopics = [
   {
-    topic_name: 'Getting Started',
+    topic_name: 'getting-started',
+    topic_label: 'Getting Started',
     description: 'Introduction and initial setup guide for new users',
     created_by: 'admin@techlifecorp.com'
   },
   {
-    topic_name: 'User Management',
+    topic_name: 'user-management',
+    topic_label: 'User Management',
     description: 'Creating, updating, and managing user accounts and roles',
     created_by: 'admin@techlifecorp.com'
   },
   {
-    topic_name: 'Content Publishing',
+    topic_name: 'content-publishing',
+    topic_label: 'Content Publishing',
     description: 'Workflow for drafting, reviewing, and publishing content',
     created_by: 'owner@techlifecorp.com'
   },
   {
-    topic_name: 'API Integration',
+    topic_name: 'api-integration',
+    topic_label: 'API Integration',
     description: 'Connecting external services with the platform API',
     created_by: 'editor@techlifecorp.com'
   },
   {
-    topic_name: 'Reporting & Analytics',
+    topic_name: 'reporting-analytics',
+    topic_label: 'Reporting & Analytics',
     description: 'Generating reports and interpreting platform metrics',
     created_by: 'owner@techlifecorp.com'
+  }
+];
+
+const seedPrompts = [
+  {
+    prompt_name: 'Welcome Message',
+    prompt: 'Generate a friendly welcome message for new users joining the platform.',
+    description: 'Default welcome message prompt for onboarding',
+    created_by: 'admin@techlifecorp.com'
+  },
+  {
+    prompt_name: 'Content Summary',
+    prompt: 'Summarize the following content in 3-5 concise bullet points.',
+    description: 'Summarization prompt for long-form content',
+    created_by: 'editor@techlifecorp.com'
+  },
+  {
+    prompt_name: 'Support Response',
+    prompt: 'Draft a professional and helpful support response to the following customer inquiry.',
+    description: 'Template prompt for customer support replies',
+    created_by: 'owner@techlifecorp.com'
+  },
+  {
+    prompt_name: 'Data Analysis',
+    prompt: 'Analyze the provided dataset and identify key trends, outliers, and actionable insights.',
+    description: 'Prompt for generating data analysis reports',
+    created_by: 'admin@techlifecorp.com'
+  }
+];
+
+const seedChatEngines = [
+  {
+    engine_name: 'OpenAI GPT-4',
+    description: 'OpenAI GPT-4 chat completion engine',
+    api_key: 'sk-placeholder-openai-key',
+    chat_apiUrl: 'https://api.openai.com/v1/chat/completions',
+    active: true
+  },
+  {
+    engine_name: 'Anthropic Claude',
+    description: 'Anthropic Claude conversational AI engine',
+    api_key: 'sk-placeholder-anthropic-key',
+    chat_apiUrl: 'https://api.anthropic.com/v1/messages',
+    active: true
+  },
+  {
+    engine_name: 'Google Gemini',
+    description: 'Google Gemini multi-modal AI engine',
+    api_key: 'sk-placeholder-google-key',
+    chat_apiUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    active: false
   }
 ];
 
@@ -93,6 +151,14 @@ const seedSystemInfo = [
     buildNumber: '100'
   }
 ];
+
+const topicPromptMap = {
+  'getting-started': 'Welcome Message',
+  'user-management': 'Support Response',
+  'content-publishing': 'Content Summary',
+  'api-integration': 'Data Analysis',
+  'reporting-analytics': 'Data Analysis'
+};
 
 const seedDatabase = async () => {
   try {
@@ -133,12 +199,6 @@ const seedDatabase = async () => {
     await Topic.deleteMany({});
     console.log('Cleared existing topics');
 
-    // Create seed topics
-    for (const topicData of seedTopics) {
-      const topic = await Topic.create(topicData);
-      console.log(`Created topic: ${topic.topic_name}`);
-    }
-
     // Clear existing loginTracker
     await LoginTracker.deleteMany({});
     console.log('Cleared existing loginTracker');
@@ -164,6 +224,50 @@ const seedDatabase = async () => {
     for (const infoData of seedSystemInfo) {
       const info = await SystemInfo.create(infoData);
       console.log(`Created systemInfo: ${info.companyOwner} v${info.version} (build ${info.buildNumber})`);
+    }
+
+    // Clear existing chat engines
+    await ChatEngine.deleteMany({});
+    console.log('Cleared existing chat engines');
+
+    // Create seed chat engines
+    const createdEngines = {};
+    for (const engineData of seedChatEngines) {
+      const engine = await ChatEngine.create(engineData);
+      createdEngines[engine.engine_name] = engine._id;
+      console.log(`Created chat engine: ${engine.engine_name}`);
+    }
+
+    // Clear existing prompts
+    await Prompt.deleteMany({});
+    console.log('Cleared existing prompts');
+
+    // Create seed prompts with chat engine linkage
+    const promptEngineMap = {
+      'Welcome Message': 'OpenAI GPT-4',
+      'Content Summary': 'Anthropic Claude',
+      'Support Response': 'OpenAI GPT-4',
+      'Data Analysis': 'Anthropic Claude'
+    };
+    const createdPrompts = {};
+    for (const promptData of seedPrompts) {
+      const engineName = promptEngineMap[promptData.prompt_name];
+      const prompt = await Prompt.create({
+        ...promptData,
+        chat_engine: engineName ? createdEngines[engineName] : null
+      });
+      createdPrompts[prompt.prompt_name] = prompt._id;
+      console.log(`Created prompt: ${prompt.prompt_name} → ${engineName || 'no engine'}`);
+    }
+
+    // Create seed topics with prompt linkage
+    for (const topicData of seedTopics) {
+      const promptName = topicPromptMap[topicData.topic_name];
+      const topic = await Topic.create({
+        ...topicData,
+        prompt: promptName ? createdPrompts[promptName] : null
+      });
+      console.log(`Created topic: ${topic.topic_name} → ${promptName || 'no prompt'}`);
     }
 
     console.log('\n========================================');

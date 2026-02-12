@@ -43,6 +43,11 @@ router.use(authenticate);
  *           type: string
  *         description: Filter by creator
  *       - in: query
+ *         name: active
+ *         schema:
+ *           type: boolean
+ *         description: Filter by active status
+ *       - in: query
  *         name: search
  *         schema:
  *           type: string
@@ -129,10 +134,15 @@ router.get(
  *             type: object
  *             required:
  *               - topic_name
+ *               - topic_label
  *               - created_by
  *             properties:
  *               topic_name:
  *                 type: string
+ *                 description: Must not contain spaces
+ *               topic_label:
+ *                 type: string
+ *                 description: Display label for the topic
  *               description:
  *                 type: string
  *               created_by:
@@ -146,9 +156,13 @@ router.get(
 router.post(
   '/',
   [
-    body('topic_name').notEmpty().withMessage('Topic name is required'),
+    body('topic_name')
+      .notEmpty().withMessage('Topic name is required')
+      .matches(/^\S+$/).withMessage('Topic name must not contain spaces'),
+    body('topic_label').notEmpty().withMessage('Topic label is required'),
     body('description').optional().isString(),
-    body('created_by').notEmpty().withMessage('Created by is required')
+    body('created_by').notEmpty().withMessage('Created by is required'),
+    body('prompt').optional({ values: 'null' }).isMongoId().withMessage('Invalid prompt ID')
   ],
   validate,
   topicController.createTopic
@@ -178,6 +192,10 @@ router.post(
  *             properties:
  *               topic_name:
  *                 type: string
+ *                 description: Must not contain spaces
+ *               topic_label:
+ *                 type: string
+ *                 description: Display label for the topic
  *               description:
  *                 type: string
  *               created_by:
@@ -192,9 +210,14 @@ router.put(
   '/:id',
   [
     param('id').isMongoId().withMessage('Invalid topic ID'),
-    body('topic_name').optional().notEmpty().withMessage('Topic name cannot be empty'),
+    body('topic_name')
+      .optional()
+      .notEmpty().withMessage('Topic name cannot be empty')
+      .matches(/^\S+$/).withMessage('Topic name must not contain spaces'),
+    body('topic_label').optional().notEmpty().withMessage('Topic label cannot be empty'),
     body('description').optional().isString(),
-    body('created_by').optional().notEmpty().withMessage('Created by cannot be empty')
+    body('created_by').optional().notEmpty().withMessage('Created by cannot be empty'),
+    body('prompt').optional({ values: 'null' }).isMongoId().withMessage('Invalid prompt ID')
   ],
   validate,
   topicController.updateTopic
@@ -221,6 +244,42 @@ router.put(
  *       404:
  *         description: Topic not found
  */
+/**
+ * @swagger
+ * /api/topics/{id}/status:
+ *   patch:
+ *     summary: Toggle topic active status
+ *     tags: [Topics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Topic ID
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               active:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Topic status updated
+ *       404:
+ *         description: Topic not found
+ */
+router.patch(
+  '/:id/status',
+  [param('id').isMongoId().withMessage('Invalid topic ID')],
+  validate,
+  topicController.toggleTopicStatus
+);
+
 router.delete(
   '/:id',
   [param('id').isMongoId().withMessage('Invalid topic ID')],

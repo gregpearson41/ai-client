@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { SvgIcon } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
-import ChatIcon from '@mui/icons-material/Chat';
 import ArticleIcon from '@mui/icons-material/Article';
 
 export interface FAQ {
@@ -57,12 +56,7 @@ const supportOptions: SupportOption[] = [
     description: 'Send us an email and we\'ll respond within 24 hours.',
     action: 'support@example.com'
   },
-  {
-    icon: ChatIcon,
-    title: 'Live Chat',
-    description: 'Chat with our support team in real-time.',
-    action: 'Start Chat'
-  },
+ 
   {
     icon: ArticleIcon,
     title: 'Documentation',

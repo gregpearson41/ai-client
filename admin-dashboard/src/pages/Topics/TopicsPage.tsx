@@ -17,21 +17,22 @@ import {
   IconButton,
   Collapse,
   Chip,
-  MenuItem,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import useAIPage from './useAIPage';
-import { IceSkating, Message } from '@mui/icons-material';
+import MenuItem from '@mui/material/MenuItem';
+import useTopicsPage from './useTopicsPage';
 
-const AIPage: React.FC = () => {
+const TopicsPage: React.FC = () => {
   const {
-    prompts,
+    topics,
     loading,
     error,
-    chatEngines,
-    enginesLoading,
+    prompts,
+    promptsLoading,
     formData,
     submitting,
     submitError,
@@ -42,21 +43,22 @@ const AIPage: React.FC = () => {
     handleSubmit,
     handleEdit,
     handleDelete,
+    handleToggleActive,
     handleCancelEdit,
-  } = useAIPage();
+  } = useTopicsPage();
 
   const [manageOpen, setManageOpen] = useState(true);
 
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>
-        AI Client Prompt
+        Topics
       </Typography>
       <Typography variant="body1" color="text.secondary" paragraph>
-        Create and manage prompts for the AI client.
+        Create and manage topics for the AI client.
       </Typography>
 
-      {/* Create / Edit Prompt Form */}
+      {/* Create / Edit Topic Form */}
       <Paper sx={{ p: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <Box
@@ -74,10 +76,10 @@ const AIPage: React.FC = () => {
               fontSize: 18,
             }}
           >
-           <Message/>
+            TLC
           </Box>
           <Typography variant="h5">
-            {editingId ? 'Edit Prompt' : 'Create Prompt'}
+            {editingId ? 'Edit Topic' : 'Create Topic'}
           </Typography>
         </Box>
 
@@ -96,22 +98,22 @@ const AIPage: React.FC = () => {
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <TextField
-            label="Prompt Name"
-            value={formData.prompt_name}
-            onChange={(e) => handleFormChange('prompt_name', e.target.value)}
+            label="Topic Name"
+            value={formData.topic_name}
+            onChange={(e) => handleFormChange('topic_name', e.target.value)}
             disabled={submitting}
             fullWidth
             required
+            helperText="Must not contain spaces (e.g. general-knowledge, ai-tools)"
           />
           <TextField
-            label="Prompt"
-            value={formData.prompt}
-            onChange={(e) => handleFormChange('prompt', e.target.value)}
+            label="Topic Label"
+            value={formData.topic_label}
+            onChange={(e) => handleFormChange('topic_label', e.target.value)}
             disabled={submitting}
             fullWidth
             required
-            multiline
-            minRows={3}
+            helperText="Display label shown to users in dropdowns"
           />
           <TextField
             label="Description"
@@ -120,26 +122,49 @@ const AIPage: React.FC = () => {
             disabled={submitting}
             fullWidth
             multiline
-            minRows={2}
+            minRows={3}
           />
           <TextField
             select
-            label="Chat Engine"
-            value={formData.chat_engine}
-            onChange={(e) => handleFormChange('chat_engine', e.target.value)}
-            disabled={submitting || enginesLoading}
+            label="Linked Prompt"
+            value={formData.prompt}
+            onChange={(e) => handleFormChange('prompt', e.target.value)}
+            disabled={submitting || promptsLoading}
             fullWidth
-            helperText={enginesLoading ? 'Loading engines...' : 'Select a chat engine for this prompt'}
+            helperText={
+              promptsLoading
+                ? 'Loading prompts...'
+                : 'Select a prompt to use with this topic (optional)'
+            }
           >
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {chatEngines.map((engine) => (
-              <MenuItem key={engine._id} value={engine._id}>
-                {engine.engine_name}
+            {prompts.map((prompt) => (
+              <MenuItem key={prompt._id} value={prompt._id}>
+                {prompt.prompt_name}
               </MenuItem>
             ))}
           </TextField>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.active}
+                onChange={(e) => handleFormChange('active', e.target.checked)}
+                disabled={submitting}
+                sx={{
+                  '& .MuiSwitch-switchBase.Mui-checked': {
+                    color: '#00bcd4',
+                  },
+                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                    backgroundColor: '#00bcd4',
+                  },
+                }}
+              />
+            }
+            label="Active"
+            sx={{ color: 'rgba(255,255,255,0.7)' }}
+          />
 
           <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
             <Button
@@ -151,9 +176,9 @@ const AIPage: React.FC = () => {
               {submitting ? (
                 <CircularProgress size={22} sx={{ color: '#fff' }} />
               ) : editingId ? (
-                'Update Prompt'
+                'Update Topic'
               ) : (
-                'Create Prompt'
+                'Create Topic'
               )}
             </Button>
             {editingId && (
@@ -165,7 +190,7 @@ const AIPage: React.FC = () => {
         </Box>
       </Paper>
 
-      {/* Manage Prompts Table */}
+      {/* Manage Topics Table */}
       <Paper sx={{ p: 3 }}>
         <Box
           sx={{
@@ -177,7 +202,7 @@ const AIPage: React.FC = () => {
           onClick={() => setManageOpen(!manageOpen)}
         >
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Manage Prompts
+            Manage Topics
           </Typography>
           <IconButton size="small">
             <ExpandMoreIcon
@@ -201,7 +226,7 @@ const AIPage: React.FC = () => {
               <Box sx={{ py: 4, textAlign: 'center' }}>
                 <CircularProgress size={28} sx={{ color: '#00bcd4' }} />
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-                  Loading prompts...
+                  Loading topics...
                 </Typography>
               </Box>
             ) : error ? (
@@ -215,10 +240,10 @@ const AIPage: React.FC = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Unable to load prompts.
+                  Unable to load topics.
                 </Typography>
               </Box>
-            ) : prompts.length === 0 ? (
+            ) : topics.length === 0 ? (
               <Box
                 sx={{
                   py: 3,
@@ -229,7 +254,7 @@ const AIPage: React.FC = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  No prompts found. Create one above to get started.
+                  No topics found. Create one above to get started.
                 </Typography>
               </Box>
             ) : (
@@ -238,9 +263,10 @@ const AIPage: React.FC = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Prompt</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Label</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Linked Prompt</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Chat Engine</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Created By</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
                       <TableCell sx={{ fontWeight: 700 }} align="right">
@@ -249,82 +275,81 @@ const AIPage: React.FC = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {prompts.map((prompt) => (
+                    {topics.map((topic) => (
                       <TableRow
-                        key={prompt._id}
+                        key={topic._id}
                         hover
                         sx={{
                           bgcolor:
-                            editingId === prompt._id
+                            editingId === topic._id
                               ? 'rgba(0,188,212,0.08)'
                               : 'transparent',
                         }}
                       >
                         <TableCell>
                           <Chip
-                            label={prompt.prompt_name}
+                            label={topic.topic_name}
                             size="small"
                             variant="outlined"
                             color="primary"
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{
-                            maxWidth: 220,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {prompt.prompt}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            maxWidth: 180,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {prompt.description || '—'}
-                        </TableCell>
+                        <TableCell>{topic.topic_label || '—'}</TableCell>
                         <TableCell>
-                          {prompt.chat_engine ? (
+                          {topic.prompt ? (
                             <Chip
-                              label={prompt.chat_engine.engine_name}
+                              label={topic.prompt.prompt_name}
                               size="small"
-                              sx={{
-                                bgcolor: prompt.chat_engine.active
-                                  ? 'rgba(76,175,80,0.15)'
-                                  : 'rgba(244,67,54,0.15)',
-                                color: prompt.chat_engine.active ? '#4caf50' : '#f44336',
-                                borderColor: prompt.chat_engine.active
-                                  ? 'rgba(76,175,80,0.4)'
-                                  : 'rgba(244,67,54,0.4)',
-                              }}
                               variant="outlined"
+                              color="secondary"
                             />
                           ) : (
-                            <Typography variant="body2" color="text.secondary">
-                              —
-                            </Typography>
+                            <Typography variant="body2" color="text.secondary">—</Typography>
                           )}
                         </TableCell>
-                        <TableCell>{prompt.created_by}</TableCell>
+                        <TableCell
+                          sx={{
+                            maxWidth: 280,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {topic.description || '—'}
+                        </TableCell>
                         <TableCell>
-                          {new Date(prompt.created_date).toLocaleDateString()}
+                          <Chip
+                            label={topic.active ? 'Active' : 'Inactive'}
+                            size="small"
+                            variant="outlined"
+                            onClick={() => handleToggleActive(topic)}
+                            sx={{
+                              cursor: 'pointer',
+                              bgcolor: topic.active
+                                ? 'rgba(76,175,80,0.15)'
+                                : 'rgba(244,67,54,0.15)',
+                              color: topic.active ? '#4caf50' : '#f44336',
+                              borderColor: topic.active
+                                ? 'rgba(76,175,80,0.4)'
+                                : 'rgba(244,67,54,0.4)',
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>{topic.created_by}</TableCell>
+                        <TableCell>
+                          {new Date(topic.created_date).toLocaleDateString()}
                         </TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleEdit(prompt)}
+                            onClick={() => handleEdit(topic)}
                             sx={{ color: '#00bcd4' }}
                           >
                             <EditIcon fontSize="small" />
                           </IconButton>
                           <IconButton
                             size="small"
-                            onClick={() => handleDelete(prompt._id)}
+                            onClick={() => handleDelete(topic._id)}
                             sx={{ color: '#f44336' }}
                           >
                             <DeleteIcon fontSize="small" />
@@ -343,4 +368,4 @@ const AIPage: React.FC = () => {
   );
 };
 
-export default AIPage;
+export default TopicsPage;

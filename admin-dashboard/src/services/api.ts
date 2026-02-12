@@ -1,5 +1,15 @@
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
+export interface SystemInfoResponse {
+  success: boolean;
+  data: {
+    companyOwner: string;
+    version: string;
+    buildNumber: string;
+  };
+}
+
+
 interface RequestOptions {
   method?: string;
   headers?: Record<string, string>;
@@ -60,7 +70,14 @@ const apiRequest = async <T>(endpoint: string, options: RequestOptions = {}): Pr
   return data;
 };
 
+
+
 export const api = {
+  async systemInfo(): Promise<SystemInfoResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/system-info`);
+    if (!res.ok) throw new Error('Failed to fetch system info');
+    return res.json();
+  },
   get: <T>(endpoint: string, headers?: Record<string, string>) =>
     apiRequest<T>(endpoint, { method: 'GET', headers }),
 

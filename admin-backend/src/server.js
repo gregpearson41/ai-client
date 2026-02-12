@@ -12,6 +12,10 @@ const userRoutes = require('./routes/users');
 const topicRoutes = require('./routes/topics');
 const systemInfoRoutes = require('./routes/systemInfo');
 const loginTrackerRoutes = require('./routes/loginTracker');
+const promptRoutes = require('./routes/prompts');
+const chatEngineRoutes = require('./routes/chatEngines');
+const publicTopicRoutes = require('./routes/publicTopics');
+
 
 // Initialize express app
 const app = express();
@@ -37,6 +41,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/topics', topicRoutes);
 app.use('/api/system-info', systemInfoRoutes);
 app.use('/api/login-tracker', loginTrackerRoutes);
+app.use('/api/prompts', promptRoutes);
+app.use('/api/chat-engines', chatEngineRoutes);
+app.use('/api/public', publicTopicRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

@@ -137,7 +137,7 @@ const ToolsPage_two: React.FC = () => {
               ))}
             </TextField>
 
-            <TextField
+            {/* <TextField
               label="Your Question"
               value={formData.question}
               onChange={(e) => handleFormChange('question', e.target.value)}
@@ -147,7 +147,7 @@ const ToolsPage_two: React.FC = () => {
               multiline
               minRows={4}
               placeholder="Type your question here..."
-            />
+            /> */}
 
             <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
               <Button

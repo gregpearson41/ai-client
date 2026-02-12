@@ -123,20 +123,14 @@ const resolveEngineCaller = (engineName) => {
 };
 
 /**
- * @desc    Submit a question with topic, prompt, and chat engine — proxies to AI API
+ * @desc    Submit a topic, prompt, and chat engine — proxies to AI API
  * @route   POST /api/public/chat-prompt
  * @access  Public
  */
 const submitChatPrompt = async (req, res) => {
   try {
-    const { question, topic_id, prompt_id, chat_engine_id } = req.body;
+    const { topic_id, prompt_id, chat_engine_id } = req.body;
 
-    if (!question || !question.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Question is required'
-      });
-    }
 
     if (!chat_engine_id) {
       return res.status(400).json({
@@ -204,7 +198,7 @@ const submitChatPrompt = async (req, res) => {
     }
 
     // Call the AI API
-    const aiResponse = await caller(chatEngine.api_key, systemMessage, question.trim());
+    const aiResponse = await caller(chatEngine.api_key, systemMessage);
 
     res.json({
       success: true,

@@ -119,10 +119,7 @@ router.get('/chat-engines', chatEngineController.getPublicChatEngines);
  *               - question
  *               - chat_engine_id
  *             properties:
- *               question:
- *                 type: string
- *                 description: The user's question
- *               topic_id:
+ *               topicid:
  *                 type: string
  *                 description: Topic ID (optional)
  *               prompt_id:

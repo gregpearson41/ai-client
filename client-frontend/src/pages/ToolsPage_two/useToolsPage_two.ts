@@ -40,7 +40,6 @@ interface ChatEngineListResponse {
 }
 
 export interface QuestionFormData {
-  question: string;
   topic: string;
   chat_engine: string;
 }
@@ -71,7 +70,6 @@ const useToolsPage_two = () => {
 
   // Form state
   const [formData, setFormData] = useState<QuestionFormData>({
-    question: '',
     topic: '',
     chat_engine: '',
   });
@@ -125,16 +123,12 @@ const useToolsPage_two = () => {
   };
 
   const resetForm = () => {
-    setFormData({ question: '', topic: '', chat_engine: '' });
+    setFormData({ topic: '', chat_engine: '' });
     setSubmitError('');
     setSubmitSuccess('');
   };
 
   const handleSubmit = async () => {
-    if (!formData.question.trim()) {
-      setSubmitError('Please enter a question.');
-      return;
-    }
     if (!formData.chat_engine) {
       setSubmitError('Please select a chat engine.');
       return;
@@ -147,7 +141,6 @@ const useToolsPage_two = () => {
 
     try {
       const payload = {
-        question: formData.question,
         topic_id: formData.topic || null,
         chat_engine_id: formData.chat_engine,
       };

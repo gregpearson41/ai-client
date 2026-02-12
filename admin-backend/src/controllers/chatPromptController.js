@@ -130,7 +130,8 @@ const resolveEngineCaller = (engineName) => {
 const submitChatPrompt = async (req, res) => {
   try {
     const { topic_id, prompt_id, chat_engine_id } = req.body;
-
+    console.log('got to this place');
+    
 
     if (!chat_engine_id) {
       return res.status(400).json({

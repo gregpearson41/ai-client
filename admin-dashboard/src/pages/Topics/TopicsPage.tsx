@@ -25,6 +25,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuItem from '@mui/material/MenuItem';
 import useTopicsPage from './useTopicsPage';
+import TopicIcon from '@mui/icons-material/Topic';
 
 const TopicsPage: React.FC = () => {
   const {
@@ -76,7 +77,7 @@ const TopicsPage: React.FC = () => {
               fontSize: 18,
             }}
           >
-            TLC
+            <TopicIcon />
           </Box>
           <Typography variant="h5">
             {editingId ? 'Edit Topic' : 'Create Topic'}

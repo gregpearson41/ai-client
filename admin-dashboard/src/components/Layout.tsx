@@ -29,6 +29,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { useAuth } from '../contexts/AuthContext';
 import Footer from './Footer';
 import TimeClock from './TimeClock';
+import AssistantTwoToneIcon from '@mui/icons-material/AssistantTwoTone';
 
 const drawerWidth = 240;
 
@@ -40,7 +41,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { text: 'AI Prompt', icon: <DashboardIcon />, path: '/ai-prompt' },
+  { text: 'AI Prompt', icon: <AssistantTwoToneIcon />, path: '/ai-prompt' },
   { text: 'Chat Engines', icon: <SmartToyIcon />, path: '/chat-engines' },
   { text: 'Topics', icon: <TopicIcon />, path: '/topics' }
 ];

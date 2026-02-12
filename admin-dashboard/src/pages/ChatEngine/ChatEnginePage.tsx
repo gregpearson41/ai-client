@@ -26,6 +26,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import useChatEnginePage from './useChatEnginePage';
 
+import { IceSkating, Message } from '@mui/icons-material';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+
 const ChatEnginePage: React.FC = () => {
   const {
     engines,
@@ -74,7 +77,7 @@ const ChatEnginePage: React.FC = () => {
               fontSize: 18,
             }}
           >
-            TLC
+            <SmartToyIcon/> 
           </Box>
           <Typography variant="h5">
             {editingId ? 'Edit Chat Engine' : 'Add Chat Engine'}

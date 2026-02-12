@@ -24,6 +24,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useAIPage from './useAIPage';
 import { IceSkating, Message } from '@mui/icons-material';
+import AssistantTwoToneIcon from '@mui/icons-material/AssistantTwoTone';
 
 const AIPage: React.FC = () => {
   const {
@@ -74,7 +75,7 @@ const AIPage: React.FC = () => {
               fontSize: 18,
             }}
           >
-           <Message/>
+           <AssistantTwoToneIcon />
           </Box>
           <Typography variant="h5">
             {editingId ? 'Edit Prompt' : 'Create Prompt'}

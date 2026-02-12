@@ -3,9 +3,23 @@ const Prompt = require('../models/Prompt');
 const ChatEngine = require('../models/ChatEngine');
 
 /**
+ * Call New OPENAI 
+ */
+const callNewOpenAI = async (apiKey, systemMessage, userMessage) => {
+    // console.log('api:', apiKey);
+    console.log('systemMessage:', systemMessage);
+    console.log('userMessage', userMessage);
+
+  return null;
+}
+
+/**
  * Call OpenAI-compatible API (GPT models)
  */
 const callOpenAI = async (apiKey, systemMessage, userMessage) => {
+
+  console.log('apki key', apiKey);
+
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -101,7 +115,8 @@ const callGemini = async (apiKey, systemMessage, userMessage) => {
  * Map engine name to the correct API caller
  */
 const ENGINE_MAP = {
-  openai: callOpenAI,
+  openai: callNewOpenAI,
+  openai2: callOpenAI,
   anthropic: callAnthropic,
   claude: callAnthropic,
   gemini: callGemini,
@@ -113,6 +128,7 @@ const ENGINE_MAP = {
  * Matches case-insensitively against known prefixes/keywords.
  */
 const resolveEngineCaller = (engineName) => {
+
   const name = engineName.toLowerCase();
   for (const [key, caller] of Object.entries(ENGINE_MAP)) {
     if (name.includes(key)) {
@@ -129,10 +145,7 @@ const resolveEngineCaller = (engineName) => {
  */
 const submitChatPrompt = async (req, res) => {
   try {
-    const { topic_id, prompt_id, chat_engine_id } = req.body;
-    console.log('got to this place');
-    
-
+    const { topic_id, chat_engine_id } = req.body;    
     if (!chat_engine_id) {
       return res.status(400).json({
         success: false,
@@ -155,13 +168,13 @@ const submitChatPrompt = async (req, res) => {
       });
     }
 
-    // Look up topic (optional)
+    // Look up topic (optional) might not need this because it's a required field
     let topic = null;
     if (topic_id) {
       topic = await Topic.findById(topic_id).populate('prompt');
     }
 
-    // Look up prompt (optional)
+    // Look up prompt (optional) This is pulled from DB should already be there
     let prompt = null;
     // Use topic's linked prompt if available
     if (topic && topic.prompt) {
@@ -179,18 +192,18 @@ const submitChatPrompt = async (req, res) => {
     }
 
     if (topic) {
-      systemParts.push(`Topic: ${topic.topic_label || topic.topic_name}`);
-      if (topic.description) {
-        systemParts.push(`Topic context: ${topic.description}`);
-      }
+      systemParts.push(topic.topic_name);
     }
 
-    const systemMessage = systemParts.length > 0
+    
+     const systemMessage = systemParts.length > 0
       ? systemParts.join('\n\n')
       : 'You are a helpful assistant.';
 
     // Resolve the correct API caller
     const caller = resolveEngineCaller(chatEngine.engine_name);
+
+    console.log("caller", caller);
     if (!caller) {
       return res.status(400).json({
         success: false,
@@ -199,7 +212,9 @@ const submitChatPrompt = async (req, res) => {
     }
 
     // Call the AI API
-    const aiResponse = await caller(chatEngine.api_key, systemMessage);
+    const aiResponse = await caller(chatEngine.api_key, systemMessage) || null;
+
+    
 
     res.json({
       success: true,
